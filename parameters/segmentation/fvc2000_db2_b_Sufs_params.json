@@ -1,0 +1,1 @@
+{"model_name": "SUFS.h5", "dnn_input_size": [512, 512], "dnn_input_dpi": 500, "image_dpi": 500, "threshold": 0.5}
