@@ -11,8 +11,8 @@ import sys
 sys.path.append(".") # To import packages from this project
 import pyfing as pf
 from pyfing.segmentation import compute_segmentation_error
-from common.fvc_segmentation_utils import fvc_db_non_500_dpi
-from common.training_callbacks import ReduceLROnPlateauWithBestWeights
+from pyfing.utils.fvc_segmentation import fvc_db_non_500_dpi
+from training_callbacks import ReduceLROnPlateauWithBestWeights
 
 
 PATH_FVC = '../datasets/'

@@ -3,11 +3,9 @@
 import sys
 import copy
 import numpy as np
-
-sys.path.append(".") # To import packages from this project
 import pyfing as pf
 from pyfing.segmentation import compute_segmentation_error
-from common.fvc_segmentation_utils import load_db, load_gt, fvc_db_non_500_dpi
+from pyfing.utils.fvc_segmentation import load_fvc_db_and_gt, fvc_db_non_500_dpi
 
 
 PATH_FVC = '../datasets/'
@@ -48,7 +46,7 @@ def optimize_parameters_on_db(year, db, subset, images, gt):
 
 
 def search_step(year, db, subset, images, gt, min_err, best_parameters, parameters):
-    e = average_err_on_db(images, gt, parameters)
+    e = average_err_on_db(images, gt, parameters)*100
     if e < min_err:
         min_err, best_parameters = e, copy.copy(parameters)
     print(f'{year}-{db}-{subset}: {parameters} -> {e:.2f}% (best: {min_err:.2f}%)')
@@ -59,10 +57,9 @@ def main():
     """
     Optimizes the parameters on the FVC B datasets
     """
-    for y, db, subset in [(y, db, "b") for y in (2000, 2002, 2004) for db in (1,2,3,4)]:
-        images = load_db(PATH_FVC, y, db, subset)
-        gt = load_gt(PATH_GT, y, db, subset)
-        optimize_parameters_on_db(y, db, subset, images, gt)
+    for y, db in [(y, db) for y in (2000, 2002, 2004) for db in (1,2,3,4)]:
+        images, gt = load_fvc_db_and_gt(PATH_FVC, PATH_GT, y, db, "b", 101, 110, 1, 8)
+        optimize_parameters_on_db(y, db, "b", images, gt)
 
 
 main()

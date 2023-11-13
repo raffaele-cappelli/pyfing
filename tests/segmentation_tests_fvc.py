@@ -3,12 +3,9 @@
 import time
 import json
 import numpy as np
-
-import sys
-sys.path.append(".") # To import packages from this project
 import pyfing as pf
 from pyfing.segmentation import compute_segmentation_error, compute_dice_coefficient, compute_jaccard_coefficient
-from common.fvc_segmentation_utils import load_fvc_db_and_gt
+from pyfing.utils.fvc_segmentation import load_fvc_db_and_gt
 
 PATH_FVC = '../datasets/'
 PATH_GT = '../datasets/segmentationbenchmark/groundtruth/'
