@@ -12,3 +12,6 @@ dynamic = ["version", "description"]
 
 [project.urls]
 Home = "https://github.com/raffaele-cappelli/pyfing"
+
+[tool.flit.sdist]
+exclude = ["examples/*", "tests/*", "train/*", "parameters/*", "models/*", ".vscode/*"]
