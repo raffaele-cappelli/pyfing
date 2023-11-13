@@ -7,7 +7,6 @@ import pyfing as pf
 from pyfing.segmentation import compute_segmentation_error
 from pyfing.utils.fvc_segmentation import load_fvc_db_and_gt, fvc_db_non_500_dpi
 
-
 PATH_FVC = '../datasets/'
 PATH_GT = '../datasets/segmentationbenchmark/groundtruth/'
 PATH_RES = '../results/'
@@ -61,5 +60,6 @@ def main():
         images, gt = load_fvc_db_and_gt(PATH_FVC, PATH_GT, y, db, "b", 101, 110, 1, 8)
         optimize_parameters_on_db(y, db, "b", images, gt)
 
+##
 
 main()
