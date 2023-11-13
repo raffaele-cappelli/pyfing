@@ -1,16 +1,10 @@
 ##### Script to train the SUFS network on FVC datasets B #####
 
 import os
-import gc
-from datetime import datetime
 import numpy as np
 import cv2 as cv
 import tensorflow as tf
 
-import sys
-sys.path.append(".") # To import packages from this project
-import pyfing as pf
-from pyfing.segmentation import compute_segmentation_error
 from pyfing.utils.fvc_segmentation import fvc_db_non_500_dpi
 from training_callbacks import ReduceLROnPlateauWithBestWeights
 
