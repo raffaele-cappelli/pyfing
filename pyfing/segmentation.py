@@ -79,21 +79,21 @@ class Gmfs(SegmentationAlgorithm):
 
         # Calculates the gradient magnitude
         gx, gy = cv.spatialGradient(image)
-        sm = cv.magnitude(gx.astype(np.float32), gy.astype(np.float32))
+        m = cv.magnitude(gx.astype(np.float32), gy.astype(np.float32))
         if intermediate_results is not None:
-            intermediate_results.append((sm, 'Gradient magnitude'))
+            intermediate_results.append((m, 'Gradient magnitude'))
 
         # Averages the gradient magnitude with a Gaussian filter
         gs =  math.ceil(3 * parameters.sigma) * 2 + 1
-        r = cv.GaussianBlur(sm, (gs, gs), parameters.sigma)
+        m_a = cv.GaussianBlur(m, (gs, gs), parameters.sigma)
         if intermediate_results is not None:
-            intermediate_results.append((r, 'Average gradient magnitude'))
+            intermediate_results.append((m_a, 'Average gradient magnitude'))
 
         # Compute the actual threshold
-        norm_t = np.percentile(sm, parameters.percentile) * parameters.threshold
+        norm_t = np.percentile(m, parameters.percentile) * parameters.threshold
 
         # Selects pixels with average gradient magnitude above the threshold
-        mask = cv.threshold(r, norm_t, 255, cv.THRESH_BINARY)[1].astype(np.uint8)
+        mask = cv.threshold(m_a, norm_t, 255, cv.THRESH_BINARY)[1].astype(np.uint8)
         if intermediate_results is not None:
             intermediate_results.append((np.copy(mask), 'Thresholding'))
 
