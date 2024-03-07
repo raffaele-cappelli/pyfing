@@ -9,7 +9,18 @@ The following segmentation methods are available:
 
 See [2] for a complete description of the two segmentation methods.
 
+
+## Fingerprint orientation field estimation methods
+The following orientation field estimation methods are available:
+- GBFOE (Gradient-Based Fingerprint Orientation Estimation): A simple fingerprint orientation estimation method based on traditional image processing techniques with minimal computational resource requirements that achieves performance comparable to much more complex methods.
+- SNFOE (Simple Network for Fingerprint Orientation Estimation): learning-based fingerprint orientation estimation method that surpasses all previous methods evaluated on public benchmarks and can deal both with plain fingerprints acquired through online sensors, and with latent fingerprints, without requiring any fine-tuning.
+
+See [3] for a complete description of the two orientation field estimation methods.
+
+
 ## References
 [1] D. H. Thai, S. Huckemann and C. Gottschlich, "Filter Design and Performance Evaluation for Fingerprint Image Segmentation," PLOS ONE, vol. 11, pp. 1-31, May 2016.
 
 [2] R. Cappelli, "Unveiling the Power of Simplicity: Two Remarkably Effective Methods for Fingerprint Segmentation," in IEEE Access, vol. 11, pp. 144530-144544, 2023, [doi: 10.1109/ACCESS.2023.3345644](https://doi.org/10.1109/ACCESS.2023.3345644).
+
+[3] (Paper under review)
