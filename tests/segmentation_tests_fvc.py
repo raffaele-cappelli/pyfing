@@ -5,7 +5,7 @@ import json
 import numpy as np
 import pyfing as pf
 from pyfing.segmentation import compute_segmentation_error, compute_dice_coefficient, compute_jaccard_coefficient
-from pyfing.utils.fvc_segmentation import load_fvc_db_and_gt
+from pyfing.utils.fvc_segmentation import load_fvc_db_and_gt, fvc_db_non_500_dpi
 
 PATH_FVC = '../datasets/'
 PATH_GT = '../datasets/segmentationbenchmark/groundtruth/'
@@ -20,8 +20,10 @@ def compute_metrics(masks, gt):
     return metrics, results
 
 def run_test(alg: pf.SegmentationAlgorithm, year, db, subset):
-    # load algorithm- and dataset-specific parameters
-    alg.parameters = alg.parameters.load(f'{PATH_PARAMS}fvc{year}_db{db}_b_{type(alg).__name__}_params.json')
+    if isinstance(alg, pf.Gmfs): # load dataset-specific parameters
+        alg.parameters = alg.parameters.load(f'{PATH_PARAMS}fvc{year}_db{db}_b_{type(alg).__name__}_params.json')
+    else:
+        alg.parameters.image_dpi = fvc_db_non_500_dpi.get((year, db), 500)
     images, gt = load_fvc_db_and_gt(PATH_FVC, PATH_GT, year, db, subset, 1, 100, 1, 8)
     start = time.time()
     masks = alg.run_on_db(images)
@@ -35,7 +37,7 @@ def run_test(alg: pf.SegmentationAlgorithm, year, db, subset):
           f'JC = {avg_metrics[2]:5.2f} [{metrics[:,2].min():5.2f}, {metrics[:,2].max():5.2f}] '\
           f'Tot time: {elapsed:5.2f}s Avg: {elapsed/len(images):.4f}s')    
     with open(f'{PATH_RES}fvc{year}_db{db}_{subset}_{alg_name}_res.txt', 'w') as file:
-        json.dump(results, file)    
+        json.dump(results, file)
     return avg_metrics
 
 ## 

@@ -1,6 +1,6 @@
 from abc import abstractmethod, ABC
 import math
-import tensorflow as tf
+import keras
 import numpy as np
 import cv2 as cv
 from .definitions import Parameters, Image
@@ -129,8 +129,8 @@ class Snfoe(OrientationEstimationAlgorithm):
     """
     Implementation of SNFOE (Simple Network for Fingerprint Orientation Estimation) method.
     """
-
-    def __init__(self, parameters : SnfoeParameters = None, model_weights = "./models/SNFOE_weights", model = None):
+    
+    def __init__(self, parameters : SnfoeParameters = None, model_weights = "./models/SNFOE.weights.h5", model = None):
         if parameters is None:
             parameters = SnfoeParameters()
         super().__init__(parameters)
@@ -143,7 +143,7 @@ class Snfoe(OrientationEstimationAlgorithm):
     
 
     def _build_model(self):
-        layers = tf.keras.layers
+        layers = keras.layers
         input = layers.Input((None, None, 2), name="input")
         x = input
 
@@ -167,9 +167,9 @@ class Snfoe(OrientationEstimationAlgorithm):
         x = layers.Conv2D(16, 5, padding="same", activation="relu", name="head_0_conv_5")(x)
         x = layers.BatchNormalization(name="head_0_bn")(x)    
         x = layers.Conv2D(2, 3, activation="linear", padding="same", name="head_linear_conv_3")(x)
-        x = layers.Lambda(lambda t: tf.math.atan2(t[...,1], t[...,0])/2, name="head_atan2")(x)
+        x = layers.Lambda(lambda t: keras.ops.arctan2(t[...,1], t[...,0])/2, name="head_atan2")(x)
 
-        return tf.keras.Model(input, x)        
+        return keras.Model(input, x)        
 
 
     def run(self, image: Image, mask: Image = None, dpi: int = 500, intermediate_results = None) -> (np.ndarray,np.ndarray):        
