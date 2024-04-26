@@ -25,6 +25,6 @@ See \[4\] for a complete description of the two orientation field estimation met
 
 \[3\] FOE benchmarks on FVC-onGoing, https://biolab.csr.unibo.it/fvcongoing/UI/Form/BenchmarkAreas/BenchmarkAreaFOE.aspx
 
-\[4\] R. Cappelli, "Exploring the Power of Simplicity: A New State-of-the-Art in Fingerprint Orientation Field Estimation," in IEEE Access, vol. 12, pp. 55998-56018, 2024, doi: [10.1109/ACCESS.2024.3389701](https://doi.org/10.1109/ACCESS.2024.3389701).
+\[4\] R. Cappelli, "Exploring the Power of Simplicity: A New State-of-the-Art in Fingerprint Orientation Field Estimation," in IEEE Access, vol. 12, pp. 55998-56018, 2024, [doi: 10.1109/ACCESS.2024.3389701](https://doi.org/10.1109/ACCESS.2024.3389701).
 
 
