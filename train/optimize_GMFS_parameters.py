@@ -1,6 +1,5 @@
 ##### Script to optimize the parameters of GMFS on FVC datasets B #####
 
-import sys
 import copy
 import numpy as np
 import pyfing as pf

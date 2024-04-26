@@ -1,4 +1,5 @@
 from abc import abstractmethod, ABC
+import os
 import math
 import keras
 import numpy as np
@@ -128,13 +129,16 @@ class SnfoeParameters(OrientationEstimationParameters):
 class Snfoe(OrientationEstimationAlgorithm):
     """
     Implementation of SNFOE (Simple Network for Fingerprint Orientation Estimation) method.
+    If both model_weights and model are None, the default model installed with the package is loaded.
     """
     
-    def __init__(self, parameters : SnfoeParameters = None, model_weights = "./models/SNFOE.weights.h5", model = None):
+    def __init__(self, parameters : SnfoeParameters = None, model_weights = None, model = None):
         if parameters is None:
             parameters = SnfoeParameters()
         super().__init__(parameters)
         self.parameters = parameters
+        if model_weights is None and model is None:
+            model_weights = os.path.dirname(__file__) + "/models/SNFOE.weights.h5"
         if model_weights is not None:
             self.model = self._build_model()
             self.model.load_weights(model_weights)

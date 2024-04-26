@@ -1,4 +1,5 @@
 from abc import abstractmethod, ABC
+import os
 import keras
 import math
 import numpy as np
@@ -161,12 +162,15 @@ class SufsParameters(SegmentationParameters):
 class Sufs(SegmentationAlgorithm):
     """
     The SUFS segmentation method.
+    If both model_weights and model are None, the default model installed with the package is loaded.
     """
-    def __init__(self, parameters : SufsParameters = None, model_weights = "./models/SUFS.weights.h5", model = None):
+    def __init__(self, parameters : SufsParameters = None, model_weights = None, model = None):
         if parameters is None:
             parameters = SufsParameters()
         super().__init__(parameters)
         self.parameters = parameters
+        if model_weights is None and model is None:
+            model_weights = os.path.dirname(__file__) + "/models/SUFS.weights.h5"
         if model_weights is not None:
             self.model = self._build_model()
             self.model.load_weights(model_weights)
