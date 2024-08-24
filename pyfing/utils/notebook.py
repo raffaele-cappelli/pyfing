@@ -3,7 +3,6 @@ import numpy as np
 import IPython
 import html
 import base64
-import math
 
 def show(*images, enlarge_small_images = True, max_per_row = -1, font_size = 0):
     if len(images) == 2 and type(images[1])==str:
