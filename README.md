@@ -12,10 +12,18 @@ See \[2\] for a complete description of the two segmentation methods.
 
 ## Fingerprint orientation field estimation methods
 The following orientation field estimation methods are available:
-- GBFOE (Gradient-Based Fingerprint Orientation Estimation): A simple fingerprint orientation estimation method based on traditional image processing techniques with minimal computational resource requirements that achieves performance comparable to much more complex methods. It achieves an average error of 5.30° and 14.40°	on the "good" and "bad" datasets of the FOE-STD-1.0 benchmark \[3\], respectively.
+- GBFOE (Gradient-Based Fingerprint Orientation Estimation): a simple fingerprint orientation estimation method based on traditional image processing techniques with minimal computational resource requirements that achieves performance comparable to much more complex methods. It achieves an average error of 5.30° and 14.40°	on the "good" and "bad" datasets of the FOE-STD-1.0 benchmark \[3\], respectively.
 - SNFOE (Simple Network for Fingerprint Orientation Estimation): learning-based fingerprint orientation estimation method that surpasses all previous methods evaluated on public benchmarks and can deal both with plain fingerprints acquired through online sensors, and with latent fingerprints, without requiring any fine-tuning. It achieves an average error of 4.30° and 6.37°	on the "good" and "bad" datasets of the FOE-STD-1.0 benchmark \[3\], respectively.
 
 See \[4\] for a complete description of the two orientation field estimation methods.
+
+
+## Fingerprint frequency estimation methods
+The following frequency estimation methods are available:
+- XSFFE (X-Signature-based Fingerprint Frequency Estimation): a simple fingerprint frequency estimation method based on traditional image processing techniques and on the computation of the x-signature. It achieves an average error of 5.10% and 7.84%	on the "good" and "bad" datasets of the FFE benchmark \[5\], respectively.
+- SNFFE (Simple Network for Fingerprint Frequency Estimation): learning-based fingerprint frequency estimation method that surpasses all previous methods evaluated on the FFE benchmark. It achieves an average error of 3.62% and 6.69%	on the "good" and "bad" datasets of the FFE benchmark \[5\], respectively.
+
+See \[6\] for a complete description of the two frequency estimation methods.
 
 
 ## References
@@ -26,5 +34,9 @@ See \[4\] for a complete description of the two orientation field estimation met
 \[3\] FOE benchmarks on FVC-onGoing, https://biolab.csr.unibo.it/fvcongoing/UI/Form/BenchmarkAreas/BenchmarkAreaFOE.aspx
 
 \[4\] R. Cappelli, "Exploring the Power of Simplicity: A New State-of-the-Art in Fingerprint Orientation Field Estimation," in IEEE Access, vol. 12, pp. 55998-56018, 2024, [doi: 10.1109/ACCESS.2024.3389701](https://doi.org/10.1109/ACCESS.2024.3389701).
+
+\[5\] FFE Benchmark, https://github.com/raffaele-cappelli/FFE
+
+\[6\] (Paper under review)
 
 
