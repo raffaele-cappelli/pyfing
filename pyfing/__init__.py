@@ -7,4 +7,4 @@ from .segmentation import SegmentationAlgorithm, SegmentationParameters, Gmfs, G
 from .orientations import OrientationEstimationAlgorithm, OrientationEstimationParameters, Gbfoe, GbfoeParameters, Snfoe, SnfoeParameters
 from .frequencies import FrequencyEstimationAlgorithm, FrequencyEstimationParameters, Xsffe, XsffeParameters, Snffe, SnffeParameters
 
-__version__ = "0.4.0"
+__version__ = "0.4.1"

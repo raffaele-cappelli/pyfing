@@ -59,9 +59,9 @@ def orientation_field_estimation(fingerprint, segmentation_mask = None, dpi = 50
     """
     global _snfoe_alg, _gbfoe_alg
     if method == "SNFOE":
-        if _gbfoe_alg is None:
-            _gbfoe_alg = Snfoe()
-        alg = _gbfoe_alg
+        if _snfoe_alg is None:
+            _snfoe_alg = Snfoe()
+        alg = _snfoe_alg
     elif method == "GBFOE":
         if _gbfoe_alg is None:
             _gbfoe_alg = Gbfoe()

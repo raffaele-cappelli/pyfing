@@ -2,7 +2,7 @@ import numpy as np
 import cv2 as cv
 
 
-def draw_orientations(img, orientations, mask, scale, step, color):
+def draw_orientations(img, orientations, mask, scale = 1, step = 16, color = (255,0,0)):
     """Draws line segments, corresponding to the orientations, every step pixels over img, 
     only on mask pixels. The scale parameter allows to resize img. Returns the resulting image."""
     if img is None:
