@@ -37,6 +37,5 @@ See \[6\] for a complete description of the two frequency estimation methods.
 
 \[5\] FFE Benchmark, https://github.com/raffaele-cappelli/FFE
 
-\[6\] (Paper under review)
-
+\[6\] R. Cappelli, "No Feature Left Behind: Filling the Gap in Fingerprint Frequency Estimation," in IEEE Access, vol. 12, pp. 153605-153617, 2024, doi: 10.1109/ACCESS.2024.3481507.
 
