@@ -1,6 +1,6 @@
 # pyfing - Fingerprint recognition in Python
 
-pyfing provides simple but effective methods for fingerprint recognition.
+Simple but effective methods for fingerprint recognition.
 
 
 ## Fingerprint segmentation methods
