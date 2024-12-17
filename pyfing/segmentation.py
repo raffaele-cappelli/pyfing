@@ -25,7 +25,7 @@ class SegmentationAlgorithm(ABC):
     def run(self, image: Image, intermediate_results = None) -> Image:
         raise NotImplementedError
     
-    def run_on_db(self, images: [Image]) -> [Image]:
+    def run_on_db(self, images: list[Image]) -> list[Image]:
         return [self.run(img) for img in images]
 
 
@@ -209,7 +209,7 @@ class Sufs(SegmentationAlgorithm):
         return self._adjust_output(mask, *size_info, original_image_w, original_image_h)
 
 
-    def run_on_db(self, images: [Image]) -> [Image]:
+    def run_on_db(self, images: list[Image]) -> list[Image]:
         # N.B. Assumes all the images have the same size!
         original_image_h, original_image_w = images[0].shape
         size_info = self._compute_size(original_image_w, original_image_h)

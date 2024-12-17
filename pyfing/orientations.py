@@ -22,10 +22,10 @@ class OrientationEstimationAlgorithm(ABC):
         self.parameters = parameters
     
     @abstractmethod
-    def run(self, image: Image, mask: Image = None, dpi: int = 500, intermediate_results = None) -> (np.ndarray, np.ndarray):
+    def run(self, image: Image, mask: Image = None, dpi: int = 500, intermediate_results = None) -> tuple[np.ndarray, np.ndarray]:
         raise NotImplementedError
     
-    def run_on_db(self, images: [Image], masks: [Image], dpi_of_images: [int]) -> [(np.ndarray,np.ndarray)]:
+    def run_on_db(self, images: list[Image], masks: list[Image], dpi_of_images: list[int]) -> list[tuple[np.ndarray,np.ndarray]]:
         return [self.run(img, mask, dpi) for img, mask, dpi in zip(images, masks, dpi_of_images)]
 
 
@@ -62,7 +62,7 @@ class Gbfoe(OrientationEstimationAlgorithm):
         super().__init__(parameters)
         self.parameters = parameters
 
-    def run(self, image: Image, mask: Image = None, dpi: int = 500, intermediate_results = None) -> (np.ndarray,np.ndarray):        
+    def run(self, image: Image, mask: Image = None, dpi: int = 500, intermediate_results = None) -> tuple[np.ndarray, np.ndarray]:        
         parameters = self.parameters
 
         if parameters.percentile > 0:
@@ -176,7 +176,7 @@ class Snfoe(OrientationEstimationAlgorithm):
         return keras.Model(input, x)        
 
 
-    def run(self, image: Image, mask: Image = None, dpi: int = 500, intermediate_results = None) -> (np.ndarray,np.ndarray):        
+    def run(self, image: Image, mask: Image = None, dpi: int = 500, intermediate_results = None) -> tuple[np.ndarray, np.ndarray]:        
         parameters = self.parameters
         original_image_h, original_image_w = image.shape
 

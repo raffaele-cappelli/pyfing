@@ -3,7 +3,7 @@ import math
 import keras
 import cv2 as cv
 from abc import abstractmethod, ABC
-from pyfing.definitions import *
+from .definitions import *
 
 
 class FrequencyEstimationParameters(Parameters):
@@ -21,10 +21,10 @@ class FrequencyEstimationAlgorithm(ABC):
         self.parameters = parameters
     
     @abstractmethod
-    def run(self, image: Image, mask: Image, orientation_field: np.ndarray, dpi: int = 500, intermediate_results = None) -> (np.ndarray):
+    def run(self, image: Image, mask: Image, orientation_field: np.ndarray, dpi: int = 500, intermediate_results = None) -> np.ndarray:
         raise NotImplementedError
     
-    def run_on_db(self, images: [Image], masks: [Image], orientation_fields: [np.ndarray], dpi_of_images: [int]) -> [np.ndarray]:
+    def run_on_db(self, images: list[Image], masks: list[Image], orientation_fields: list[np.ndarray], dpi_of_images: list[int]) -> list[np.ndarray]:
         return [self.run(img, mask, orientation_field, dpi) for img, mask, orientation_field, dpi in zip(images, masks, orientation_fields, dpi_of_images)]
 
 
@@ -81,7 +81,7 @@ class Skffe(FrequencyEstimationAlgorithm):
         return offsets
 
 
-    def run(self, image: Image, mask: Image, orientation_field: np.ndarray, intermediate_results = None) -> (np.ndarray):
+    def run(self, image: Image, mask: Image, orientation_field: np.ndarray, intermediate_results = None) -> np.ndarray:
         parameters = self.parameters
         h, w = image.shape
         res = np.zeros((h, w), np.float32)        
@@ -164,7 +164,7 @@ class Xsffe(FrequencyEstimationAlgorithm):
         super().__init__(parameters)
         self.parameters = parameters
 
-    def run(self, image: Image, mask: Image, orientation_field: np.ndarray, dpi: int = 500, intermediate_results = None) -> (np.ndarray):
+    def run(self, image: Image, mask: Image, orientation_field: np.ndarray, dpi: int = 500, intermediate_results = None) -> np.ndarray:
         if dpi != 500:
             raise ValueError("Only 500 dpi images are currently supported")
         parameters = self.parameters                   
@@ -314,7 +314,7 @@ class Snffe(FrequencyEstimationAlgorithm):
         return keras.Model(input, x[...,0])
 
 
-    def run(self, image: Image, mask: Image, orientation_field: np.ndarray, dpi: int = 500, intermediate_results = None) -> (np.ndarray,np.ndarray):        
+    def run(self, image: Image, mask: Image, orientation_field: np.ndarray, dpi: int = 500, intermediate_results = None) -> np.ndarray:
         parameters = self.parameters
         original_image_h, original_image_w = image.shape
 
