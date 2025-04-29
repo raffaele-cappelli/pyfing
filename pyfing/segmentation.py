@@ -5,6 +5,7 @@ import math
 import numpy as np
 import cv2 as cv
 from .definitions import Image, Parameters
+from ._internal_utils import _predict_and_get_all_outputs, _resize_and_crop_intermediate_output
 
 
 class SegmentationParameters(Parameters):
@@ -202,11 +203,18 @@ class Sufs(SegmentationAlgorithm):
         original_image_h, original_image_w = image.shape
         size_info = self._compute_size(original_image_w, original_image_h)        
         ir = self._adjust_input(image, *size_info)
-        if intermediate_results is not None: intermediate_results.append((np.copy(ir), 'Adjusted input'))
-        val_preds = self.model.predict(ir[np.newaxis,...,np.newaxis],verbose = 0)
-        if intermediate_results is not None: intermediate_results.append((np.copy(val_preds[0].squeeze()), 'Net output'))
-        mask = np.where(val_preds[0].squeeze()<self.parameters.threshold, 0, 255).astype(np.uint8) # [0..1] ==> 0,255
+        if intermediate_results is not None:
+            if self.parameters.dnn_input_dpi != self.parameters.image_dpi: 
+                raise NotImplementedError("Intermediate results are not available for different input resolution")
+            res = _predict_and_get_all_outputs(self.model, ir[np.newaxis, ..., np.newaxis])
+            intermediate_results += [(_resize_and_crop_intermediate_output(*size_info, r), l) for r, l in res]
+            val_preds = res[-1][0]
+        else:
+            # From keras doc: For small numbers of inputs that fit in one batch, directly use __call__() for faster execution
+            val_preds = self.model(ir[np.newaxis, ...], training = False).numpy()
+        mask = np.where(val_preds[0].squeeze() < self.parameters.threshold, 0, 255).astype(np.uint8) # [0..1] ==> 0,255        
         return self._adjust_output(mask, *size_info, original_image_w, original_image_h)
+
 
 
     def run_on_db(self, images: list[Image]) -> list[Image]:

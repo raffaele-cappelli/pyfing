@@ -8,4 +8,4 @@ from .orientations import OrientationEstimationAlgorithm, OrientationEstimationP
 from .frequencies import FrequencyEstimationAlgorithm, FrequencyEstimationParameters, Xsffe, XsffeParameters, Snffe, SnffeParameters
 from .enhancement import EnhancementAlgorithm, EnhancementParameters, Gbfen, GbfenParameters, Snfen, SnfenParameters
 
-__version__ = "0.5.0"
+__version__ = "0.5.1"

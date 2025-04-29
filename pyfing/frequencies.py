@@ -3,6 +3,7 @@ import math
 import keras
 import cv2 as cv
 from abc import abstractmethod, ABC
+from ._internal_utils import _predict_and_get_all_outputs, _resize_and_crop_intermediate_output
 from .definitions import *
 
 
@@ -290,7 +291,7 @@ class Snffe(FrequencyEstimationAlgorithm):
         cos2 = layers.Lambda(lambda t: keras.ops.cos(t), name="cos2")(rad)
         x = layers.Concatenate(name="concat_input")([x[...,0:2], sen2, cos2])
         
-        # Encoder    
+        # Encoder
         level_count = 5
         intermediate_outputs = []        
         for i in range(level_count):
@@ -331,11 +332,20 @@ class Snffe(FrequencyEstimationAlgorithm):
         size_mult = parameters.dnn_input_size_multiple
         input_w, input_h = (w+size_mult-1)//size_mult*size_mult, (h+size_mult-1)//size_mult*size_mult
         border_left, border_top = (input_w-w)//2, (input_h-h)//2
-        ir = cv.copyMakeBorder(image, border_top, input_h-h-border_top, border_left, input_w-w-border_left, cv.BORDER_CONSTANT, value = image[0,0].tolist())
-        mr = cv.copyMakeBorder(mask//255, border_top, input_h-h-border_top, border_left, input_w-w-border_left, cv.BORDER_CONSTANT)
-        orr = cv.copyMakeBorder(orientation_field, border_top, input_h-h-border_top, border_left, input_w-w-border_left, cv.BORDER_CONSTANT)
+        border_right, border_bottom = input_w-w-border_left, input_h-h-border_top
+        ir = cv.copyMakeBorder(image, border_top, border_bottom, border_left, border_right, cv.BORDER_CONSTANT, value = image[0,0].tolist())
+        mr = cv.copyMakeBorder(mask//255, border_top, border_bottom, border_left, border_right, cv.BORDER_CONSTANT)
+        orr = cv.copyMakeBorder(orientation_field, border_top, border_bottom, border_left, border_right, cv.BORDER_CONSTANT)
         orr = np.round((orr % np.pi) * 255 / np.pi).clip(0,255).astype(np.uint8)
-        rp = self.model(np.dstack((ir, mr, orr))[np.newaxis,...], training = False).numpy()[0] # From keras documentation: "For small numbers of inputs that fit in one batch, directly use __call__() for faster execution"
+        if intermediate_results is not None:
+            if dpi != parameters.dnn_input_dpi: 
+                raise NotImplementedError("Intermediate results are not available for different input resolution")
+            res = _predict_and_get_all_outputs(self.model, np.dstack((ir, mr, orr))[np.newaxis,...])
+            intermediate_results += [(_resize_and_crop_intermediate_output(w, h, border_left, border_top, border_right, border_bottom, r), l) for r, l in res]
+            rp = res[-1][0][0]
+        else:
+            # From keras documentation: "For small numbers of inputs that fit in one batch, directly use __call__() for faster execution"
+            rp = self.model(np.dstack((ir, mr, orr))[np.newaxis,...], training = False).numpy()[0] 
         rp = rp[border_top:border_top+h, border_left:border_left+w]
 
         if dpi != parameters.dnn_input_dpi:
@@ -343,6 +353,5 @@ class Snffe(FrequencyEstimationAlgorithm):
             rp *= (dpi / parameters.dnn_input_dpi)
 
         rp /= 10
-
         return rp
     
