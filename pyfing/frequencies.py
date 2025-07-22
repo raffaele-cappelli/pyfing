@@ -262,7 +262,7 @@ class SnffeParameters(FrequencyEstimationParameters):
 
 class Snffe(FrequencyEstimationAlgorithm):
     """
-    Implementation of SNFOE (Simple Network for Fingerprint Orientation Estimation) method.
+    Implementation of SNFFE (Simple Network for Fingerprint Frequency Estimation) method.
     If both model_weights and model are None, the default model installed with the package is loaded.
     """
     
