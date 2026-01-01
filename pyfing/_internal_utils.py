@@ -20,7 +20,7 @@ def _resize_and_crop_intermediate_output(w, h, border_left, border_top, border_r
         raise Exception("Invalid batch size")
     if ow != w_full or oh != h_full:
         imgs = [cv.resize(output[0,...,i], (w_full, h_full), interpolation=cv.INTER_NEAREST) for i in range(n)]
-        output = np.empty((1, h_full, w_full, n), dtype=np.uint8)
+        output = np.empty((1, h_full, w_full, n), dtype=np.float32)
         for i in range(n):
             output[0,...,i] = imgs[i]
     return output[0,border_top:border_top+h, border_left:border_left+w,:]
