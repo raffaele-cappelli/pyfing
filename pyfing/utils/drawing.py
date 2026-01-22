@@ -48,7 +48,7 @@ def draw_frequencies(fingerprint, periods, mask):
     return cv.cvtColor(cv.merge((h, s, fingerprint)), cv.COLOR_HSV2BGR)
 
 
-def draw_feature_map(intermediate_results: list, indices: list, feature_index_range: tuple[int, int]) -> Image:
+def draw_feature_map(intermediate_results: list, indices: list, feature_index_range: tuple[int, int], background: int = 0) -> Image:
     """
     Creates a single image displaying a subset of intermediate outputs from CNN-based pyfing algorithms;
     each sub-image is normalized based on its own minimum and maximum values, scaled between 0 and 255.
@@ -58,6 +58,7 @@ def draw_feature_map(intermediate_results: list, indices: list, feature_index_ra
         intermediate_results : List of tuples containing the intermediate outputs from CNN layers.
         indices : List of indices specifying which layers' outputs to visualize.
         feature_index_range : Tuple (start, stop) defining the range of feature indices to display.
+        background : Pixel value for the background (default is 0, black).
     
     Returns:
     --------
@@ -73,7 +74,7 @@ def draw_feature_map(intermediate_results: list, indices: list, feature_index_ra
     j1, j2 = feature_index_range
     n = min(j2 - j1, n)
     row_count = len(indices)
-    map = np.zeros((row_count * h, n * w), np.uint8)
+    map = np.full((row_count * h, n * w), background, np.uint8)
     for i in range(row_count):
         r, _ = intermediate_results[indices[i]]
         for j in range(j1, j2):
