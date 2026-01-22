@@ -2,6 +2,7 @@ import math
 from glob import glob
 import numpy as np
 import cv2 as cv
+from pyfing.definitions import Minutia
 
 
 _NIST_TAGS = {
@@ -112,13 +113,13 @@ def _read_nist_file(path):
     return fields
 
 
-def _parse_minutia(xyd, q, t):
+def _parse_minutia(xyd, q, t) -> Minutia:
     x = int(round(float(xyd[0:4])*19.69/100))
     y = int(round((3900-float(xyd[4:8]))*19.69/100))
     d = (math.radians(int(xyd[8:11])) + math.pi) % (2*math.pi)
     q = int(q)
-    t = 'T' if t == 'A' else 'B' if t == 'B' else 'O'
-    return x, y, d, t, q
+    t = 'E' if t == 'A' else 'B' if t == 'B' else 'O'
+    return Minutia(x, y, d, t, q)
 
 
 def _load_sd27_orientations(path, border):

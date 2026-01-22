@@ -2,6 +2,7 @@ from .segmentation import *
 from .orientations import *
 from .frequencies import *
 from .enhancement import *
+from .minutiae import *
 import numpy as np
 
 
@@ -13,9 +14,9 @@ _xsffe_alg = None
 _snffe_alg = None
 _snfen_alg = None
 _gbfen_alg = None
+_leader_alg = None
 
-
-def fingerprint_segmentation(fingerprint, dpi = 500, method = "SUFS"):
+def fingerprint_segmentation(fingerprint: Image, dpi: int = 500, method: str = "SUFS") -> Image:
     """
     Simple API for fingerprint segmentation.
 
@@ -44,7 +45,7 @@ def fingerprint_segmentation(fingerprint, dpi = 500, method = "SUFS"):
     return alg.run(fingerprint)
 
 
-def orientation_field_estimation(fingerprint, segmentation_mask = None, dpi = 500, method = "SNFOE"):
+def orientation_field_estimation(fingerprint: Image, segmentation_mask: Image|None = None, dpi: int = 500, method: str = "SNFOE") -> np.ndarray:
     """
     Simple API for fingerprint orientation field estimation.
 
@@ -76,7 +77,7 @@ def orientation_field_estimation(fingerprint, segmentation_mask = None, dpi = 50
     return alg.run(fingerprint, segmentation_mask, dpi)[0]
 
 
-def frequency_estimation(fingerprint, orientation_field, segmentation_mask = None, dpi = 500, method = "SNFFE"):
+def frequency_estimation(fingerprint: Image, orientation_field: np.ndarray, segmentation_mask: Image | None = None, dpi: int = 500, method: str = "SNFFE") -> np.ndarray:
     """
     Simple API for fingerprint frequency estimation.
 
@@ -108,7 +109,8 @@ def frequency_estimation(fingerprint, orientation_field, segmentation_mask = Non
     return alg.run(fingerprint, segmentation_mask, orientation_field, dpi)
 
 
-def fingerprint_enhancement(fingerprint, orientation_field, ridge_period_map, segmentation_mask = None, dpi = 500, method = "SNFEN"):
+def fingerprint_enhancement(fingerprint: Image, orientation_field: np.ndarray, ridge_period_map: np.ndarray, segmentation_mask: Image | None = None, 
+                            dpi: int = 500, method: str = "SNFEN") -> Image:
     """
     Simple API for fingerprint enhancement.
 
@@ -139,4 +141,32 @@ def fingerprint_enhancement(fingerprint, orientation_field, ridge_period_map, se
     if segmentation_mask is None:
         segmentation_mask = np.full_like(fingerprint, 255)
     return alg.run(fingerprint, segmentation_mask, orientation_field, ridge_period_map, dpi)
+
+
+def minutiae_extraction(fingerprint: Image, dpi: int = 500, method: str = "LEADER") -> list[Minutia]:
+    """
+    Simple API for fingerprint minutiae extraction.
+
+    Parameters
+    ----------
+    fingerprint : Image
+        A numpy array containing the fingerprint image (dtype: np.uint8). 
+    dpi : int, optional
+        The fingerprint resolution in dots per inch. Default is 500.
+    method : str, optional
+        The extraction algorithm to use. Currently only "LEADER" is supported.
+
+    Returns
+    -------
+    list[Minutia]
+        A list of detected minutiae.
+    """
+    global _leader_alg
+    if method == "LEADER":
+        if _leader_alg is None:
+            _leader_alg = Leader()
+        alg = _leader_alg
+    else:
+        raise ValueError(f"Invalid method ({method})")
+    return alg.run(fingerprint, dpi)
 

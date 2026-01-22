@@ -56,7 +56,7 @@ class Skffe(FrequencyEstimationAlgorithm):
     This method should be used only on binary skeleton images, not on raw fingerprint images.
     """
 
-    def __init__(self, parameters : SkffeParameters = None):
+    def __init__(self, parameters : SkffeParameters|None = None):
         if parameters is None:
             parameters = SkffeParameters()
         super().__init__(parameters)

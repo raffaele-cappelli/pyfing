@@ -1,8 +1,19 @@
 import numpy as np
 import json
+from typing import NamedTuple
 
-# type alias for fingerprint images
+# type alias for fingerprint (and other) images
 Image = np.ndarray
+
+
+class Minutia(NamedTuple):
+    """A minutia with its (x,y) coordinates, direction, type ("E"=Ending, "B"=Bifurcation, "O"=Other), and quality"""
+    x: int
+    y: int
+    direction: float
+    type: str
+    quality: float
+
 
 class Parameters:
     """
