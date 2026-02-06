@@ -42,7 +42,7 @@ def _remove_minutiae_near_borders(minutiae, background_distance, border_distance
 
 def test(db_name, alg, db, warmup = True):
     print(f"Testing on {db_name}...")
-    alg.parameters.min_minutia_score = 0.01 # To find the optimal F1-score
+    alg.parameters.minutia_quality_threshold = 0.01 # To find the optimal F1-score
     fingerprints, segmentation_masks, gt_minutiae = map(list, zip(*[_crop_roi(f, s, m) for f, s, m, _ in db]))
     
     if warmup:

@@ -32,7 +32,7 @@ class EndToEndMinutiaExtractionAlgorithm(ABC):
    
 class LeaderParameters(EndToEndMinutiaExtractionParameters):
     """
-    Parameters for the LEADER (Lightweight End-to-end Attention-gated Double skip-autoencodER) method.
+    Parameters for LEADER (Lightweight End-to-end Attention-gated Dual autoencodER).
 
     This class holds the configuration for fingerprint minutia extraction, including 
     image rescaling requirements, neural network input constraints, and detection thresholds.
@@ -47,28 +47,28 @@ class LeaderParameters(EndToEndMinutiaExtractionParameters):
             dnn_input_size_multiple (int): The divisor required for input dimensions. 
                 Input images are padded so that both width and height are multiples 
                 of this value, as required by the underlying model architecture.
-            min_minutia_score (float): The confidence threshold for minutia detection. 
+            minutia_quality_threshold (float): The confidence threshold for minutia detection. 
                 The default value (0.6) is tuned for a balanced precision/recall on 
                 high-quality databases; different datasets may require adjustment 
                 for optimal results.
             type_threshold (float): The decision threshold for classification. 
-                Values above this threshold are typically classified as 'Terminations' (T), 
+                Values above this threshold are typically classified as 'Endings' (E), 
                 while values below are classified as 'Bifurcations' (B).
         """
         self.dnn_input_dpi = dnn_input_dpi
         self.dnn_input_size_multiple = dnn_input_size_multiple
-        self.min_minutia_score = minutia_quality_threshold
+        self.minutia_quality_threshold = minutia_quality_threshold
         self.type_threshold = type_threshold
 
 
 class Leader(EndToEndMinutiaExtractionAlgorithm):
     """
-    Implementation of the LEADER (Lightweight End-to-end Attention-gated Double 
-    skip-autoencodER) minutiae extraction method.
+    Implementation of the LEADER (Lightweight End-to-end Attention-gated Dual autoencodER) 
+    minutiae extraction method.
 
     This algorithm uses a dual skip-autoencoder architecture with attention-gate
-    to perform end-to-end minutiae detection, orientation estimation, and type
-    classification directly from fingerprint images.
+    to perform end-to-end minutiae detection, direction estimation, and type
+    classification from raw fingerprint images.
     """
     def __init__(self, parameters : LeaderParameters | None = None, model_weights = None, model = None):
         """
@@ -165,7 +165,7 @@ class Leader(EndToEndMinutiaExtractionAlgorithm):
         x = Leader._stem_block(5, 8, True, 2, "stem0", input)
         x1 = Leader._stem_block(5, 16, False, 2, "stem1", input)
 
-        # First Skip-autoencoder
+        # Context-Autoencoder
         skip_inputs = []
         for i, fc in enumerate([16, 32, 64, 128]):
             x = Leader._sep_conv_block(5, fc, f"enc0_{i}", x)
@@ -175,14 +175,14 @@ class Leader(EndToEndMinutiaExtractionAlgorithm):
             x = Leader._sep_conv_block(5, fc, f"dec0_{i}", x)
             x = Leader._upsample_block(f"dec0_{i}", x, skip_inputs[i])            
 
-        # Attention-gate
+        # Attention-Gate
         d = [layers.Conv2D(16, 3, dilation_rate=d, padding="same", activation="gelu", name=f"attention_conv_d{d}")(x) for d in (1, 3, 6)]
         xd = layers.Concatenate(name="attention_dconc")(d)
         xf = layers.Conv2D(32, 1, activation="sigmoid", name="attention_s")(xd)
         x = layers.Multiply(name="attention_mult")([x, xf])
         x = layers.Concatenate(name="attention_conc")([x, x1])
 
-        # Second Skip-autoencoder
+        # Refinement-Autoencoder
         skip_inputs = []
         for i, fc in enumerate([32, 64, 128, 32]):
             x = Leader._inverse_bottleneck_conv_block(7, fc, f"enc1_{i}", x)
@@ -271,7 +271,7 @@ class Leader(EndToEndMinutiaExtractionAlgorithm):
 
 
     def _get_minutiae(self, out) -> list[Minutia]:
-        coords = np.argwhere(out[...,3] >= self.parameters.min_minutia_score).tolist()
+        coords = np.argwhere(out[...,3] >= self.parameters.minutia_quality_threshold).tolist()
         return [Minutia(ix, iy, out[iy, ix, 1].item(), 'E' if out[iy, ix, 2] >= self.parameters.type_threshold else 'B', out[iy, ix, 3].item()) for iy, ix in coords]  # P_NMS is used as minutia quality
 
 
