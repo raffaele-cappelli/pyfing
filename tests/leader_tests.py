@@ -79,7 +79,7 @@ def test(db_name, alg, db, warmup = True):
 #################################### Main #####################################
 ###############################################################################
 
-print("Loading model...")
+print("Loading model...") 
 alg = pf.Leader()
 
 print("Loading FVC2002 DB1-A data...")
