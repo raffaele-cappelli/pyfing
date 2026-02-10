@@ -11,11 +11,11 @@ from pyfing.utils.minutiae_tools import compute_minutiae_extraction_accuracy
 
 
 # FOLDER PATHS
-db27_folder = "../datasets/NIST_DB27" # path of the NIST SD27 db (the folder is expected to contain ./DATA/GOOD/, ./DATA/BAD/, ./DATA/UGLY/ subfolders)
-db27_gt_folder = "../datasets/orientations/SD27" # path of the NIST SD27 orientation/segmentation masks (the folder is expected to contain ./OF_manual subfolder)
+db27_folder = "../datasets/NIST_SD27" # path of the NIST SD27 db (the folder is expected to contain ./DATA/GOOD/, ./DATA/BAD/, ./DATA/UGLY/ subfolders)
+db27_seg_gt_folder = "../datasets/NIST_SD27_GT" # path of the NIST SD27 orientation/segmentation masks (the folder is expected to contain ./OF_manual subfolder)
 fvc2002_db1_a_folder = "../datasets/fvc2002/db1_a" # path of the FVC2002 DB1-A image folder
-fvc2002_db1_a_min_gt_folder = "../datasets/MinutiaeGroundTruth/FM3_FVC2002DB1A" # path of the FVC2002 DB1-A minutiae ground truth folder
-fvc2002_db1_a_seg_gt_folder = "../datasets/fvc-ground-truth/fvc2002/db1_a" # path of the FVC2002 DB1-A segmentation ground truth folder
+fvc2002_db1_a_min_gt_folder = "../datasets/FM3_FVC2002DB1A" # path of the FVC2002 DB1-A minutiae ground truth folder
+fvc2002_db1_a_seg_gt_folder = "../datasets/FVC_SEG_GT/fvc2002/db1_a" # path of the FVC2002 DB1-A segmentation ground truth folder
 
 batch_size = 32 # Depending on the amount of GPU RAM available, this may have to be tuned
 type_agnostic_modes = [True, False]
@@ -60,18 +60,18 @@ def test(db_name, alg, db, warmup = True):
         gt_minutiae[i] = _remove_minutiae_near_borders(gt_minutiae[i], background_distance)
 
     res = {}
-    for type_anostic in type_agnostic_modes:
+    for type_agnostic in type_agnostic_modes:
         for match_level in match_levels:
-            print(f"Measuring accuracy [{'Type-agnostic' if type_anostic else 'Type-aware'}, ({match_level[0]}, π/{round(math.pi/match_level[1]):.0f})]...")
-            res[(type_anostic, match_level)] = compute_minutiae_extraction_accuracy(minutiae, gt_minutiae, type_anostic, *match_level)
+            print(f"Measuring accuracy [{'Type-agnostic' if type_agnostic else 'Type-aware'}, ({match_level[0]}, π/{round(math.pi/match_level[1]):.0f})]...")
+            res[(type_agnostic, match_level)] = compute_minutiae_extraction_accuracy(minutiae, gt_minutiae, type_agnostic, *match_level)
 
     print("--- Results ---")
     print(f"Average per-image execution time: {elapsed*1000/len(db):.1f}ms")
     print()
     print("F1-scores: ", end="")
-    for type_anostic in type_agnostic_modes:
+    for type_agnostic in type_agnostic_modes:
         for match_level in match_levels:
-            print(f"{res[type_anostic, match_level].f1_score:.2f} ", end="")
+            print(f"{res[type_agnostic, match_level].f1_score:.2f} ", end="")
     print()
 
 
@@ -79,7 +79,7 @@ def test(db_name, alg, db, warmup = True):
 #################################### Main #####################################
 ###############################################################################
 
-print("Loading model...")
+print("Loading model...") 
 alg = pf.Leader()
 
 print("Loading FVC2002 DB1-A data...")
@@ -90,7 +90,7 @@ db = [(cv.imread(f'{fvc2002_db1_a_folder}/{i}_1.png', cv.IMREAD_GRAYSCALE),
 test("FVC2002 DB1-A", alg, db)
 
 print("Loading NIST SD27 data...")
-db = load_sd27_test_db(db27_folder, db27_gt_folder, "GOOD", False, True) + \
-     load_sd27_test_db(db27_folder, db27_gt_folder, "BAD", False, True) + \
-     load_sd27_test_db(db27_folder, db27_gt_folder, "UGLY", False, True)
+db = load_sd27_test_db(db27_folder, db27_seg_gt_folder, "GOOD", False, True) + \
+     load_sd27_test_db(db27_folder, db27_seg_gt_folder, "BAD", False, True) + \
+     load_sd27_test_db(db27_folder, db27_seg_gt_folder, "UGLY", False, True)
 test("NIST SD27", alg, db)
