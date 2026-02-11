@@ -10,12 +10,27 @@ from pyfing.utils.iso_format import load_minutiae_from_iso_template_file
 from pyfing.utils.minutiae_tools import compute_minutiae_extraction_accuracy
 
 
-# FOLDER PATHS
-db27_folder = "../datasets/NIST_SD27" # path of the NIST SD27 db (the folder is expected to contain ./DATA/GOOD/, ./DATA/BAD/, ./DATA/UGLY/ subfolders)
-db27_seg_gt_folder = "../datasets/NIST_SD27_GT" # path of the NIST SD27 orientation/segmentation masks (the folder is expected to contain ./OF_manual subfolder)
-fvc2002_db1_a_folder = "../datasets/fvc2002/db1_a" # path of the FVC2002 DB1-A image folder
-fvc2002_db1_a_min_gt_folder = "../datasets/FM3_FVC2002DB1A" # path of the FVC2002 DB1-A minutiae ground truth folder
-fvc2002_db1_a_seg_gt_folder = "../datasets/FVC_SEG_GT/fvc2002/db1_a" # path of the FVC2002 DB1-A segmentation ground truth folder
+# --------------------
+# --- FOLDER PATHS ---
+# --------------------
+
+# path of the NIST SD27 db (the folder is expected to contain ./DATA/GOOD/, ./DATA/BAD/, ./DATA/UGLY/ subfolders) [https://doi.org/10.6028/NIST.IR.6534]
+db27_folder = "../datasets/NIST_SD27" 
+
+# path of the NIST SD27 orientation/segmentation masks (the folder is expected to contain ./OF_manual subfolder) [https://doi.org/10.1109/TPAMI.2012.155]
+db27_seg_gt_folder = "../datasets/NIST_SD27_GT" 
+
+# path of the FVC2002 DB1-A image folder [https://doi.org/10.1007/978-3-030-83624-5]
+fvc2002_db1_a_folder = "../datasets/fvc2002/db1_a" 
+
+# path of the FVC2002 DB1-A minutiae ground truth folder [https://doi.org/10.48550/arXiv.1305.1443]
+fvc2002_db1_a_min_gt_folder = "../datasets/FM3_FVC2002DB1A"
+
+# path of the FVC segmentation ground truth folder [http://dx.doi.org/10.6084/m9.figshare.1294209]
+fvc2002_db1_a_seg_gt_folder = "../datasets/FVC_SEG_GT" 
+
+# --------------------
+
 
 batch_size = 32 # Depending on the amount of GPU RAM available, this may have to be tuned
 type_agnostic_modes = [True, False]
@@ -84,7 +99,7 @@ alg = pf.Leader()
 
 print("Loading FVC2002 DB1-A data...")
 db = [(cv.imread(f'{fvc2002_db1_a_folder}/{i}_1.png', cv.IMREAD_GRAYSCALE), 
-       cv.imread(f'{fvc2002_db1_a_seg_gt_folder}/{i}_1.fg.png', cv.IMREAD_GRAYSCALE), 
+       cv.bitwise_not(cv.imread(f'{fvc2002_db1_a_seg_gt_folder}/fvc2002_db1_im_{i}_1seg.png', cv.IMREAD_GRAYSCALE)), 
        load_minutiae_from_iso_template_file(f"{fvc2002_db1_a_min_gt_folder}/{i}_1.iso-fmr"), 
        f'{i}_1') for i in range(1,101)]
 test("FVC2002 DB1-A", alg, db)
