@@ -5,7 +5,7 @@ Simple but effective methods for fingerprint recognition.
 ## Getting Started
 
 ### Installation
-You can install the library via pip (make sure Keras 3 and TensorFlow are already installed):
+You can install the library via pip (make sure Keras 3, TensorFlow, and OpenCV are already installed):
 
 ```bash
 pip install pyfing
@@ -95,6 +95,7 @@ See \[9\] for a complete description of LEADER.
 \[8\] (Paper under review)
 
 \[9\] R. Cappelli and M. Ferrara, "LEADER: Lightweight End-to-End Attention-Gated Dual Autoencoder for Robust Minutiae Extraction," 2026, arXiv preprint arXiv:2602.15493. [https://arxiv.org/abs/2602.15493](https://arxiv.org/abs/2602.15493)
+
 
 
 
