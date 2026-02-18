@@ -2,6 +2,40 @@
 
 Simple but effective methods for fingerprint recognition.
 
+## Getting Started
+
+### Installation
+You can install the library via pip (make sure Keras 3 and TensorFlow are already installed):
+
+```bash
+pip install pyfing
+```
+
+### Quick Example
+The following example shows how to load an image, segment it, estimate orientation and frequency, enhance the image, and finally extract minutiae:
+
+```Python
+import cv2 as cv
+import pyfing as pf
+
+# Load the fingerprint image in grayscale
+fingerprint = cv.imread('fingerprint.png', cv.IMREAD_GRAYSCALE)
+
+# Segmentation and feature extraction
+segmentation_mask = pf.fingerprint_segmentation(fingerprint)
+orientations = pf.orientation_field_estimation(fingerprint, segmentation_mask)
+frequencies = pf.frequency_estimation(fingerprint, orientations, segmentation_mask)
+
+# Image enhancement
+enhanced_image = pf.fingerprint_enhancement(fingerprint, orientations, frequencies, segmentation_mask, method="GBFEN")
+
+# End-to-end minutiae extraction (Note: this method does NOT require previous steps)
+minutiae = pf.minutiae_extraction(fingerprint)
+```
+
+---
+## Available methods
+Below you can find an overview of the different methods available in pyfing for each step of the fingerprint recognition pipeline.
 
 ## Fingerprint segmentation
 The following segmentation methods are available:
@@ -61,5 +95,6 @@ See \[9\] for a complete description of LEADER.
 \[8\] (Paper under review)
 
 \[9\] R. Cappelli and M. Ferrara, "LEADER: Lightweight End-to-End Attention-Gated Dual Autoencoder for Robust Minutiae Extraction," 2026, arXiv preprint arXiv:2602.15493. [https://arxiv.org/abs/2602.15493](https://arxiv.org/abs/2602.15493)
+
 
 
