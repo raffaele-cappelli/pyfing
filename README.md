@@ -82,19 +82,19 @@ See \[9\] for a complete description of LEADER.
 
 \[2\] R. Cappelli, "Unveiling the Power of Simplicity: Two Remarkably Effective Methods for Fingerprint Segmentation," in IEEE Access, vol. 11, pp. 144530-144544, 2023, [doi: 10.1109/ACCESS.2023.3345644](https://doi.org/10.1109/ACCESS.2023.3345644).
 
-\[3\] FOE benchmarks on FVC-onGoing, https://biolab.csr.unibo.it/fvcongoing/UI/Form/BenchmarkAreas/BenchmarkAreaFOE.aspx
+\[3\] FOE benchmarks on FVC-onGoing, [https://biolab.csr.unibo.it/fvcongoing/UI/Form/BenchmarkAreas/BenchmarkAreaFOE.aspx](https://biolab.csr.unibo.it/fvcongoing/UI/Form/BenchmarkAreas/BenchmarkAreaFOE.aspx).
 
 \[4\] R. Cappelli, "Exploring the Power of Simplicity: A New State-of-the-Art in Fingerprint Orientation Field Estimation," in IEEE Access, vol. 12, pp. 55998-56018, 2024, [doi: 10.1109/ACCESS.2024.3389701](https://doi.org/10.1109/ACCESS.2024.3389701).
 
-\[5\] FFE Benchmark, https://github.com/raffaele-cappelli/FFE
+\[5\] FFE Benchmark, [https://github.com/raffaele-cappelli/FFE](https://github.com/raffaele-cappelli/FFE).
 
-\[6\] R. Cappelli, "No Feature Left Behind: Filling the Gap in Fingerprint Frequency Estimation," in IEEE Access, vol. 12, pp. 153605-153617, 2024, doi: [10.1109/ACCESS.2024.3481507](https://doi.org/10.1109/ACCESS.2024.3481507).
+\[6\] R. Cappelli, "No Feature Left Behind: Filling the Gap in Fingerprint Frequency Estimation," in IEEE Access, vol. 12, pp. 153605-153617, 2024, [doi: 10.1109/ACCESS.2024.3481507](https://doi.org/10.1109/ACCESS.2024.3481507).
 
 \[7\] M. D. Garris and R. M. McCabe, NIST Special Database 27: Fingerprint Minutiae from Latent and Matching Tenprint Images, 2000.
 
 \[8\] R. Cappelli, "Unleashing the Power of Simplicity: A Minimalist Strategy for State-of-the-Art Fingerprint Enhancement", 2026, arXiv preprint arXiv:2603.19004. [https://arxiv.org/abs/2603.19004](https://arxiv.org/abs/2603.19004).
 
-\[9\] R. Cappelli and M. Ferrara, "LEADER: Lightweight End-to-End Attention-Gated Dual Autoencoder for Robust Minutiae Extraction," 2026, arXiv preprint arXiv:2602.15493. [https://arxiv.org/abs/2602.15493](https://arxiv.org/abs/2602.15493)
+\[9\] R. Cappelli and M. Ferrara, "LEADER: Lightweight End-to-End Attention-Gated Dual Autoencoder for Robust Minutiae Extraction," 2026, arXiv preprint arXiv:2602.15493. [https://arxiv.org/abs/2602.15493](https://arxiv.org/abs/2602.15493).
 
 
 
