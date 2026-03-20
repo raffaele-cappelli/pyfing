@@ -92,7 +92,7 @@ See \[9\] for a complete description of LEADER.
 
 \[7\] M. D. Garris and R. M. McCabe, NIST Special Database 27: Fingerprint Minutiae from Latent and Matching Tenprint Images, 2000.
 
-\[8\] (Paper under review)
+\[8\] R. Cappelli, "Unleashing the Power of Simplicity: A Minimalist Strategy for State-of-the-Art Fingerprint Enhancement", 2026, arXiv preprint arXiv:2603.19004. [https://arxiv.org/abs/2603.19004](https://arxiv.org/abs/2603.19004).
 
 \[9\] R. Cappelli and M. Ferrara, "LEADER: Lightweight End-to-End Attention-Gated Dual Autoencoder for Robust Minutiae Extraction," 2026, arXiv preprint arXiv:2602.15493. [https://arxiv.org/abs/2602.15493](https://arxiv.org/abs/2602.15493)
 
