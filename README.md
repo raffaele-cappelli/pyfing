@@ -72,7 +72,7 @@ See \[8\] for a complete description of the two fingerprint enhancement methods.
 
 ## End-to-end minutiae extraction
 The following end-to-end minutia extraction method is available:
-- LEADER (Lightweight End-to-end Attention-gated Dual autoencodER): a neural network that maps raw fingerprint images to minutiae descriptors, including location, direction, and type. With only 0.9 M parameters, it achieves state-of-the-art accuracy on plain fingerprints and robust cross-domain generalization to latent impressions.
+- LEADER (Lightweight End-to-end Attention-gated Dual Encoder-decodeR): a neural network that maps raw fingerprint images to minutiae descriptors, including location, direction, and type. With only 0.9 M parameters, it achieves state-of-the-art accuracy on plain fingerprints and robust cross-domain generalization to latent impressions.
 
 See \[9\] for a complete description of LEADER.
 
