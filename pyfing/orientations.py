@@ -92,6 +92,7 @@ class Gbfoe(OrientationEstimationAlgorithm):
             gx[mask==0] = 0
             gy[mask==0] = 0
 
+        # Minus sign in gxy2 for orientation counter-clockwise
         gx2, gy2, g2xy = cv.pow(gx, 2), cv.pow(gy, 2), cv.multiply(gx, gy, scale = -2)
         
         # First calculate strengths with parameters.sigma_base
@@ -110,7 +111,7 @@ class Gbfoe(OrientationEstimationAlgorithm):
         sum_gx2, sum_gy2 = cv.GaussianBlur(gx2, ksize, 0), cv.GaussianBlur(gy2, ksize, 0)
         sum_gx2_gy2 = cv.add(sum_gx2, sum_gy2)
         n = cv.subtract(sum_gx2, sum_gy2)
-        d = cv.GaussianBlur(g2xy, ksize, sigma)  # minus sign in gxy2 for orientation counter-clockwise
+        d = cv.GaussianBlur(g2xy, ksize, sigma)
         strengths = np.divide(cv.sqrt(n**2 + d**2), sum_gx2_gy2, out=np.zeros_like(gx2), where=sum_gx2_gy2!=0)
         if mask is not None:
             strengths[mask==0] = 0
