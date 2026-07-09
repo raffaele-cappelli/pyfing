@@ -9,4 +9,4 @@ from .frequencies import FrequencyEstimationAlgorithm, FrequencyEstimationParame
 from .enhancement import EnhancementAlgorithm, EnhancementParameters, Gbfen, GbfenParameters, Snfen, SnfenParameters
 from .minutiae import EndToEndMinutiaExtractionAlgorithm, EndToEndMinutiaExtractionParameters, Leader, LeaderParameters
 
-__version__ = "0.6"
+__version__ = "0.7"

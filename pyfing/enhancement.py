@@ -79,14 +79,14 @@ class Gbfen(EnhancementAlgorithm):
             f = 500 / dpi
             image = cv.resize(image, None, fx = f, fy = f, interpolation = cv.INTER_CUBIC)
         gbi = self._gabor_bank_indices(orientation_field, ridge_periods, p.orientations_count, p.period_min, p.period_max, p.periods_count)            
-        needed = np.zeros(len(self._gabor_bank))
-        needed[np.unique(gbi)] = 1
+        filters_needed = np.zeros(len(self._gabor_bank), dtype=bool)
+        filters_needed[np.unique(gbi)] = True
         z = np.zeros_like(image)        
         img = cv.bitwise_not(image) # We want white ridge-lines on a black background
         # Unfortunately, contextual convolution is not available in OpenCV: we apply all needed filters to the whole image
-        r = np.array([cv.filter2D(img, -1, f) if v==1 else z for f, v in zip(self._gabor_bank, needed)])        
+        r = np.array([cv.filter2D(img, -1, f) if needed else z for f, needed in zip(self._gabor_bank, filters_needed)])        
         if intermediate_results is not None: intermediate_results += [(f, f'{j}') for j, f in enumerate(r)]
-        y, x = np.indices(img.shape)
+        y, x = np.ogrid[:img.shape[0], :img.shape[1]]
         img = r[gbi, y, x]
         if dpi != 500:
             img = cv.resize(img, (original_image_w, original_image_h), interpolation = cv.INTER_CUBIC)
