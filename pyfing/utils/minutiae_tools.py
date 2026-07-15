@@ -34,27 +34,88 @@ class MinutiaeExtractionAccuracy(NamedTuple):
     quality_threshold: float
 
 
-def compute_minutiae_extraction_accuracy(minutiae: list[list[Minutia]], gt_minutiae: list[list[Minutia]], type_agnostic = True, max_distance = 16, 
-                                         max_direction_difference = math.pi/6) -> MinutiaeExtractionAccuracy:
-    all_quality_scores = [m.quality for m in itertools.chain.from_iterable(minutiae)]
-    q_min, q_max = (min(all_quality_scores), max(all_quality_scores)) if len(all_quality_scores) > 0 else (0, 0)
-    if q_min == q_max:
-        q_max += 1e-6 # We need to perform just an iteration
-    q_step = (q_max - q_min) / 100
-    best = MinutiaeExtractionAccuracy(0, 0, 0, 0, 0, 0, q_min)
-    for t in np.arange(q_min, q_max, q_step): 
-        tp, fp, tot_gt = 0, 0, 0
-        for m, gt_m in zip(minutiae, gt_minutiae):
-            m = [x for x in m if x.quality >= t] # Only extracted minutiae with quality >= t
-            n_true, n_false, _ = compare_minutiae_to_gt(m, gt_m, type_agnostic, max_distance, max_direction_difference)
+def compute_minutiae_extraction_accuracy(
+    minutiae: list[list[Minutia]], 
+    gt_minutiae: list[list[Minutia]], 
+    type_agnostic: bool = True, 
+    max_distance: int = 16, 
+    max_direction_difference: float = math.pi / 6
+) -> MinutiaeExtractionAccuracy:
+    """
+    Computes the optimal minutiae extraction accuracy by dynamically finding
+    the quality threshold that maximizes the F1-score.
+    
+    Optimized with an O(1) list-based cache and adaptive percentile thresholds 
+    to handle continuous quality values efficiently.
+    """
+    # 1. Extract all unique quality values from the entire dataset using an efficient set comprehension
+    unique_qualities = sorted({m.quality for m in itertools.chain.from_iterable(minutiae)})
+    
+    if not unique_qualities:
+        return MinutiaeExtractionAccuracy(0, 0, 0, 0, 0, 0, 0)
+        
+    # 2. Select up to 100 thresholds.
+    # If we have <= 100 unique values, we use them all directly (perfect resolution, zero overhead).
+    # If we have more, we sample 100 values at equal percentile ranks of the distribution.
+    if len(unique_qualities) <= 100:
+        thresholds = unique_qualities
+    else:
+        # Exact nearest-neighbor percentile selection in pure Python
+        n_elements = len(unique_qualities)
+        thresholds = [unique_qualities[round(i * (n_elements - 1) / 99)] for i in range(100)]
+        
+    best = MinutiaeExtractionAccuracy(0, 0, 0, 0, 0, 0, thresholds[0])
+    
+    # Pre-allocate a list to cache the single most recent state for each image.
+    # Since active minutiae counts strictly decrease or stay the same as threshold t increases,
+    # we only ever need to remember the immediate previous step.
+    # Format: [None] or [(last_active_count, cached_tp, cached_fp)]
+    matching_cache: list[tuple[int, int, int] | None] = [None] * len(minutiae)
+    
+    # Pre-calculate the total number of ground truth minutiae (invariant)
+    tot_gt = sum(len(gt_m) for gt_m in gt_minutiae)
+    if tot_gt == 0:
+         return best
+
+    # 3. Iterate through adaptive quality thresholds
+    for t in thresholds: 
+        tp, fp = 0, 0
+        
+        for idx, (m, gt_m) in enumerate(zip(minutiae, gt_minutiae)):
+            # Filter minutiae above the current quality threshold
+            filtered_m = [x for x in m if x.quality >= t]
+            num_active = len(filtered_m)
+            
+            # Cache hit check: since filtered_m is a deterministic subset,
+            # if the count of active minutiae hasn't changed compared to the previous step,
+            # we can skip the geometric matching entirely.
+            cached_state = matching_cache[idx]
+            if cached_state is not None and cached_state[0] == num_active:
+                tp += cached_state[1]
+                fp += cached_state[2]
+                continue
+            
+            # Cache miss: perform the exact bipartite geometric matching
+            n_true, n_false, _ = compare_minutiae_to_gt(
+                filtered_m, gt_m, type_agnostic, max_distance, max_direction_difference
+            )
+            
+            # Overwrite the cache with the new active state for this image
+            matching_cache[idx] = (num_active, n_true, n_false)
+            
             tp += n_true
             fp += n_false
-            tot_gt += len(gt_m)
-        if (tp + fp > 0) and (tot_gt > 0):
+            
+        # 4. Calculate metrics and update the best score
+        if (tp + fp > 0):
             fn = tot_gt - tp
-            precision = tp / (tp+fp)
-            recall = tp / tot_gt # that is /(tp+fn)
-            f1 = 2*tp/(2*tp+fp+fn)
+            precision = tp / (tp + fp)
+            recall = tp / tot_gt
+            f1 = 2 * tp / (2 * tp + fp + fn)
+            
             if f1 > best.f1_score:
                 best = MinutiaeExtractionAccuracy(tp, fp, fn, precision, recall, f1, t)
+                
     return best
+
+
