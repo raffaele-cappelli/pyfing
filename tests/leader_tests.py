@@ -6,6 +6,7 @@ import cv2 as cv
 import pyfing as pf
 from pyfing.minutiae import Minutia
 from pyfing.utils.sd27 import load_sd27_test_db
+from pyfing.utils.sd302 import load_sd302_test_db
 from pyfing.utils.iso_format import load_minutiae_from_iso_template_file
 from pyfing.utils.minutiae_tools import compute_minutiae_extraction_accuracy
 
@@ -13,12 +14,6 @@ from pyfing.utils.minutiae_tools import compute_minutiae_extraction_accuracy
 # --------------------
 # --- FOLDER PATHS ---
 # --------------------
-
-# path of the NIST SD27 db (the folder is expected to contain ./DATA/GOOD/, ./DATA/BAD/, ./DATA/UGLY/ subfolders) [https://doi.org/10.6028/NIST.IR.6534]
-db27_folder = "../datasets/NIST_SD27" 
-
-# path of the NIST SD27 orientation/segmentation masks (the folder is expected to contain ./OF_manual subfolder) [https://doi.org/10.1109/TPAMI.2012.155]
-db27_seg_gt_folder = "../datasets/NIST_SD27_GT" 
 
 # path of the FVC2002 DB1-A image folder [https://doi.org/10.1007/978-3-030-83624-5]
 fvc2002_db1_a_folder = "../datasets/fvc2002/db1_a" 
@@ -29,10 +24,19 @@ fvc2002_db1_a_min_gt_folder = "../datasets/FM3_FVC2002DB1A"
 # path of the FVC segmentation ground truth folder [http://dx.doi.org/10.6084/m9.figshare.1294209]
 fvc2002_db1_a_seg_gt_folder = "../datasets/FVC_SEG_GT" 
 
+# path of the NIST SD27 db (the folder is expected to contain ./DATA/GOOD/, ./DATA/BAD/, ./DATA/UGLY/ subfolders) [https://doi.org/10.6028/NIST.IR.6534]
+db27_folder = "../datasets/NIST_SD27" 
+
+# path of the NIST SD27 orientation/segmentation masks (the folder is expected to contain ./OF_manual subfolder) [https://doi.org/10.1109/TPAMI.2012.155]
+db27_seg_gt_folder = "../datasets/NIST_SD27_GT" 
+
+# path of the NIST SD302 db (SD 302h: annotation records of latent impression distal phalanx images from SD 302e) [https://doi.org/10.6028/NIST.TN.2367]
+db302_folder = '../datasets/NIST_SD302/sd302h/ebts/latent/lffs/original/unmasked'
+
 # --------------------
 
 
-batch_size = 32 # Depending on the amount of GPU RAM available, this may have to be tuned
+batch_size = 16 # Depending on the amount of GPU RAM available, this may have to be tuned
 type_agnostic_modes = [True, False]
 match_levels = [(16, math.pi/6), (12, math.pi/8), (8, math.pi/10)]
 
@@ -56,7 +60,7 @@ def _remove_minutiae_near_borders(minutiae, background_distance, border_distance
 
 
 def test(db_name, alg, db, warmup = True):
-    print(f"Testing on {db_name}...")
+    print(f"Testing on {db_name} ({len(db)} fingerprints)...")
     alg.parameters.minutia_quality_threshold = 0.01 # To find the optimal F1-score
     fingerprints, segmentation_masks, gt_minutiae = map(list, zip(*[_crop_roi(f, s, m) for f, s, m, _ in db]))
     
@@ -109,3 +113,7 @@ db = load_sd27_test_db(db27_folder, db27_seg_gt_folder, "GOOD", False, True) + \
      load_sd27_test_db(db27_folder, db27_seg_gt_folder, "BAD", False, True) + \
      load_sd27_test_db(db27_folder, db27_seg_gt_folder, "UGLY", False, True)
 test("NIST SD27", alg, db)
+
+print("Loading NIST SD302 data...")
+db = load_sd302_test_db(db302_folder)
+test("NIST SD302", alg, db)

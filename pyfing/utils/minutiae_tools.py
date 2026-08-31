@@ -107,14 +107,19 @@ def compute_minutiae_extraction_accuracy(
             fp += n_false
             
         # 4. Calculate metrics and update the best score
+        fn = tot_gt - tp
         if (tp + fp > 0):
-            fn = tot_gt - tp
             precision = tp / (tp + fp)
-            recall = tp / tot_gt
+            recall = tp / tot_gt if tot_gt > 0 else 0.0 # Handle edge case: no ground truth minutiae but predictions exist, zero recall
             f1 = 2 * tp / (2 * tp + fp + fn)
+        else:
+            if tot_gt == 0:
+                precision, recall, f1 = 1.0, 1.0, 1.0  # Edge case: no ground truth and no predictions, perfect score
+            else:
+                precision, recall, f1 = 0.0, 0.0, 0.0 # Edge case: no predictions but ground truth exists, zero score
             
-            if f1 > best.f1_score:
-                best = MinutiaeExtractionAccuracy(tp, fp, fn, precision, recall, f1, t)
+        if f1 > best.f1_score:
+            best = MinutiaeExtractionAccuracy(tp, fp, fn, precision, recall, f1, t)
                 
     return best
 

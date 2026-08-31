@@ -32,7 +32,7 @@ class EndToEndMinutiaExtractionAlgorithm(ABC):
    
 class LeaderParameters(EndToEndMinutiaExtractionParameters):
     """
-    Parameters for LEADER (Lightweight End-to-end Attention-gated Dual autoencodER).
+    Parameters for LEADER (Lightweight End-to-end Attention-gated Dual Encoder-decodeR).
 
     This class holds the configuration for fingerprint minutia extraction, including 
     image rescaling requirements, neural network input constraints, and detection thresholds.
@@ -63,10 +63,10 @@ class LeaderParameters(EndToEndMinutiaExtractionParameters):
 
 class Leader(EndToEndMinutiaExtractionAlgorithm):
     """
-    Implementation of the LEADER (Lightweight End-to-end Attention-gated Dual autoencodER) 
+    Implementation of the LEADER (Lightweight End-to-end Attention-gated Dual Encoder-decodeR) 
     minutiae extraction method.
 
-    This algorithm uses a dual skip-autoencoder architecture with attention-gate
+    This algorithm uses a dual encoder-decoder architecture with attention-gate
     to perform end-to-end minutiae detection, direction estimation, and type
     classification from raw fingerprint images.
     """
@@ -165,7 +165,7 @@ class Leader(EndToEndMinutiaExtractionAlgorithm):
         x = Leader._stem_block(5, 8, True, 2, "stem0", input)
         x1 = Leader._stem_block(5, 16, False, 2, "stem1", input)
 
-        # Context-Autoencoder
+        # Context-Enc-Dec
         skip_inputs = []
         for i, fc in enumerate([16, 32, 64, 128]):
             x = Leader._sep_conv_block(5, fc, f"enc0_{i}", x)
@@ -182,7 +182,7 @@ class Leader(EndToEndMinutiaExtractionAlgorithm):
         x = layers.Multiply(name="attention_mult")([x, xf])
         x = layers.Concatenate(name="attention_conc")([x, x1])
 
-        # Refinement-Autoencoder
+        # Refinement-Enc-Dec
         skip_inputs = []
         for i, fc in enumerate([32, 64, 128, 32]):
             x = Leader._inverse_bottleneck_conv_block(7, fc, f"enc1_{i}", x)
