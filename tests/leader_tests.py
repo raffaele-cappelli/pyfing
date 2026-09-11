@@ -6,7 +6,7 @@ import cv2 as cv
 import pyfing as pf
 from pyfing.minutiae import Minutia
 from pyfing.utils.sd27 import load_sd27_test_db
-from pyfing.utils.sd302 import load_sd302_test_db
+from pyfing.utils.sd302 import load_sd302_latent_db
 from pyfing.utils.iso_format import load_minutiae_from_iso_template_file
 from pyfing.utils.minutiae_tools import compute_minutiae_extraction_accuracy
 
@@ -115,5 +115,5 @@ db = load_sd27_test_db(db27_folder, db27_seg_gt_folder, "GOOD", False, True) + \
 test("NIST SD27", alg, db)
 
 print("Loading NIST SD302 data...")
-db = load_sd302_test_db(db302_folder)
+db = load_sd302_latent_db(db302_folder)
 test("NIST SD302", alg, db)

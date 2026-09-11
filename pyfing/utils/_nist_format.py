@@ -21,6 +21,7 @@ _NIST_TAGS = {
     '2.010': ('Criminal Reference Number', ''),
     '2.011': ('Other Reference Number', ''),
     '2.034': ('Aliases', ''),
+    '2.074': ('FGP', ''),
 
     # Type-9 Minutiae Data Record (legacy + EFS)
     '9.001': ('Logical Record Length', ''),
@@ -100,6 +101,8 @@ _NIST_TAGS = {
     '14.011': ('Compression Algorithm', ''),
     '14.012': ('Bits per Pixel', ''),
     '14.013': ('Finger / Palm Position', ''),
+    '14.901': ('Friction ridge capture technology', ''),
+    '14.996': ('Hash', ''),
     '14.999': ('Image Data', 'EB')
 }
 

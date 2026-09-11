@@ -35,6 +35,15 @@ def _create_pixelwise_foreground(fg, s):
 
 
 def load_sd27_test_db(image_path, gt_path, db_name, include_orientations_and_dpi = False, include_minutiae_and_name = False):
+    """
+    Loads the latent SD27 dataset with the specified name ("GOOD", "BAD", or "UGLY") from the given path.
+    The database is returned as a list of tuples, each containing:
+    - The fingerprint image (numpy array)
+    - The ground truth pixelwise segmentation mask (numpy array)
+    - Optionally, the ground truth blockwise orientation field and foreground mask (numpy arrays), and the DPI of the image (int)
+    - Optionally, the ground truth minutiae (list of Minutia objects) and the name of the image (str)    
+    """
+
     img_paths = sorted(glob(f"{image_path}/DATA/{db_name}/**/*L*.EFT", recursive=True))
     border_gt = 8
     db = []

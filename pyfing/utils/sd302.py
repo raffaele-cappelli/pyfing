@@ -20,7 +20,21 @@ def _parse_minutia(values):
     return Minutia(x, y, d, t, q)
 
 
-def load_sd302_test_db(folder_path, include_limited_value = False, include_no_value = False, include_non_print = False):
+def load_sd302_latent_db(folder_path, include_limited_value = False, include_no_value = False, include_non_print = False):
+    """
+    Loads the NIST SD302 latent dataset from the given folder path.
+    The database is returned as a list of tuples, each containing:
+    - The fingerprint image (numpy array)
+    - The ground truth segmentation mask (numpy array)
+    - The ground truth minutiae (list of Minutia objects)
+    - The name of the image (str)
+    The function filters the images based on the assessment value in field '9.353':
+    - If include_limited_value is True, images with assessment value 'LIMITED' are included.
+    - If include_no_value is True, images with assessment value 'NOVALUE' are included.
+    - If include_non_print is True, images with assessment value 'NONPRINT' are included.
+    By default, only images with assessment value 'VALUE' are included.
+    All images are resized to 500 dpi resolution."""
+
     V_FLAGS = { "VALUE": True, "LIMITED": include_limited_value, "NOVALUE": include_no_value, "NONPRINT": include_non_print }
     db = []
     for file_path in Path(folder_path).rglob('*.lffs'):
@@ -69,3 +83,33 @@ def load_sd302_test_db(folder_path, include_limited_value = False, include_no_va
 
         db.append((f, mask, minutiae, file_path.name))
     return db
+
+
+def load_sd302_exemplar_db(folder_path):
+    """
+    Loads the NIST SD302 exemplar dataset from the given folder path.
+    The database is returned as a list of tuples, each containing:
+    - The fingerprint image (numpy array)
+    - The ground truth minutiae (list of Minutia objects)
+    - The name of the image (str)
+    - The original resolution of the image (int)
+    The function expects the images to be in .irr format and the resolution to be either 500 or 1000 dpi. 
+    If the resolution is 1000 dpi, the image is resized to 500 dpi.
+    """
+    db = []
+    for file_path in Path(folder_path).rglob('*.irr'):
+        n = _read_nist_file(str(file_path))
+        image_array = np.frombuffer(n['14.999'], dtype=np.uint8)
+        f = cv.imdecode(image_array, cv.IMREAD_GRAYSCALE)        
+        resolution = (n['14.009'], n['14.010'])
+        if resolution == ([['1000']], [['1000']]):        
+            f = cv.resize(f, None, None, 0.5, 0.5, interpolation=cv.INTER_CUBIC) # resize to 500 dpi resolution
+            original_resolution = 1000            
+        elif resolution == ([['500']], [['500']]):
+            original_resolution = 500
+        else:
+            raise ValueError(f"Unexpected resolution {resolution}")
+        minutiae = [_parse_minutia(x) for x in n["9.331"]]
+        db.append((f, minutiae, file_path.name, original_resolution))
+    return db
+
