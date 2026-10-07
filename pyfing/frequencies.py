@@ -159,7 +159,7 @@ class Xsffe(FrequencyEstimationAlgorithm):
     Implementation of XSFFE (X-Signature Fingerprint Frequency Estimation) method.
     """
     
-    def __init__(self, parameters : XsffeParameters = None):
+    def __init__(self, parameters : XsffeParameters | None = None):
         if parameters is None:
             parameters = XsffeParameters()
         super().__init__(parameters)
@@ -172,7 +172,7 @@ class Xsffe(FrequencyEstimationAlgorithm):
         wnd_hw, wnd_hh = parameters.window_size[0]//2, parameters.window_size[1]//2    
         h, w = image.shape
         border = parameters.border
-        nw, nh = ((w-border*2) // parameters.step) + 1, ((h-border*2) // parameters.step) + 1
+        nw, nh = ((w-border) // parameters.step) + 1, ((h-border) // parameters.step) + 1
         if parameters.median_size > 0:
             image = cv.medianBlur(image, parameters.median_size)
             if intermediate_results is not None: 
@@ -214,28 +214,29 @@ class Xsffe(FrequencyEstimationAlgorithm):
             intermediate_results.append((img_points, 'Sampling positions'))
             intermediate_results.append((res, 'Sampling result'))
 
-        # Finally create the result with the same size of fingerprint by resising res        
+        # Finally create the result with the same size of the fingerprint by resizing res        
+        b1 = border - 1 - parameters.step // 2 # The border to be added to the final image
+        low_res_b1 = (b1 + parameters.step - 1) // parameters.step + 1
+        res = cv.copyMakeBorder(res, low_res_b1, low_res_b1, low_res_b1, low_res_b1, cv.BORDER_CONSTANT)
         inpaint_mask = (res == 0).astype(np.uint8)
         res = cv.inpaint(res, inpaint_mask, parameters.diffusion_size / parameters.step, cv.INPAINT_NS)
         if intermediate_results is not None:
             intermediate_results.append((res, 'After inpainting'))
 
-        r_w, r_h = parameters.step*nw, parameters.step*nh
+        r_w, r_h = parameters.step*(nw+low_res_b1*2), parameters.step*(nh+low_res_b1*2)
         res = cv.resize(res, (r_w, r_h), interpolation = cv.INTER_LINEAR)
-        b1 = border - 1 - parameters.step // 2
-        
-        res = cv.copyMakeBorder(res, b1, h - r_h - b1, b1, w - r_w - b1, cv.BORDER_CONSTANT)
-        inpaint_mask = (res == 0).astype(np.uint8)
-        res = cv.inpaint(res, inpaint_mask, parameters.diffusion_size, cv.INPAINT_NS)
+        offset = parameters.step*low_res_b1 - b1
+        res = res[offset:offset+h, offset:offset+w]
         
         if intermediate_results is not None:
-            intermediate_results.append((res, 'After resize'))
+            intermediate_results.append((res, 'After resize1'))
         if parameters.final_blur_size>0:
             res = cv.GaussianBlur(res, (parameters.final_blur_size, parameters.final_blur_size), 0)
 
         res[mask == 0] = 0        
-        return res        
-
+        return res
+    
+    
     def _plot_x_signature(self, region, xs, maxima):
         size = 100
         rw = region.shape[1]
@@ -248,7 +249,6 @@ class Xsffe(FrequencyEstimationAlgorithm):
             img[y, size, 0] = 255
         img[:,size+1:,:] = region[...,np.newaxis]
         return img
-    
 
     
 class SnffeParameters(FrequencyEstimationParameters):
