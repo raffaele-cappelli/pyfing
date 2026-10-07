@@ -139,7 +139,7 @@ class XsffeParameters(FrequencyEstimationParameters):
     Parameters of XSFFE (X-Signature Fingerprint Frequency Estimation) method
     """
 
-    def __init__(self, window_size = (23, 43), step = 8, border = 7, min_background_distance = 11, period_min = 5, period_max = 20,
+    def __init__(self, window_size = (23, 43), step = 16, border = 15, min_background_distance = 11, period_min = 5, period_max = 20,
                  min_valid_distances = 4, diffusion_size = 21, median_size = 5, blur_size = 3, final_blur_size = 33):
         self.window_size = window_size
         self.step = step

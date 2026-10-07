@@ -34,7 +34,7 @@ class GbfenParameters(EnhancementParameters):
     """
     Parameters of GBFEN (Gabor-Based Fingerprint ENhancement) method.
     """
-    def __init__(self, orientations_count = 16, periods_count = 9, period_min = 5, period_max = 20):
+    def __init__(self, orientations_count = 12, periods_count = 7, period_min = 5, period_max = 16):
         self.orientations_count = orientations_count
         self.periods_count = periods_count
         self.period_min = period_min
@@ -45,7 +45,7 @@ class Gbfen(EnhancementAlgorithm):
     """
     Implementation of GBFEN (Gabor-Based Fingerprint ENhancement) method.
     """    
-    def __init__(self, parameters : GbfenParameters = None):
+    def __init__(self, parameters : GbfenParameters | None = None):
         if parameters is None:
             parameters = GbfenParameters()
         super().__init__(parameters)
@@ -109,7 +109,7 @@ class Snfen(EnhancementAlgorithm):
     If both model_weights and model are None, the default model installed with the package is loaded.
     """
     
-    def __init__(self, parameters : SnfenParameters = None, model_weights = None, model = None):
+    def __init__(self, parameters : SnfenParameters | None = None, model_weights = None, model = None):
         if parameters is None:
             parameters = SnfenParameters()
         super().__init__(parameters)
@@ -123,6 +123,7 @@ class Snfen(EnhancementAlgorithm):
             self.model = model
   
 
+    @staticmethod
     def _build_model():
         layers = keras.layers
         level_count = 5
