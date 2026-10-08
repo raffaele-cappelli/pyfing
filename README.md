@@ -70,11 +70,10 @@ linearity, and ease of implementation.
 See \[8\] for a complete description of the two fingerprint enhancement methods.
 
 
-## End-to-end minutiae extraction
-The following end-to-end minutia extraction method is available:
-- LEADER (Lightweight End-to-end Attention-gated Dual Encoder-decodeR): a neural network that maps raw fingerprint images to minutiae descriptors, including location, direction, and type. With only 0.9 M parameters, it achieves state-of-the-art accuracy on plain fingerprints and robust cross-domain generalization to latent impressions.
-
-See \[9\] for a complete description of LEADER.
+## Minutiae extraction
+The following minutia extraction method are available:
+- SBMEX (Skeleton-Based Minutia EXtraction): a simple traditional method based on Crossing Number computation from ridge and valley skeletons. SBMEX takes an enhanced fingerprint image and its segmentation mask as input. Its performance is aligned with legacy traditional baselines (MINDTCT, FingerJet) \[9\].
+- LEADER (Lightweight End-to-end Attention-gated Dual Encoder-decodeR): a neural network that maps raw fingerprint images to minutiae descriptors, including location, direction, and type. With only 0.9 M parameters, it achieves state-of-the-art accuracy on plain fingerprints and robust cross-domain generalization to latent impressions \[10\].
 
 
 ## References
@@ -94,7 +93,10 @@ See \[9\] for a complete description of LEADER.
 
 \[8\] R. Cappelli, "Unleashing the Power of Simplicity: A Minimalist Strategy for State-of-the-Art Fingerprint Enhancement", 2026, arXiv preprint arXiv:2603.19004. [https://arxiv.org/abs/2603.19004](https://arxiv.org/abs/2603.19004).
 
-\[9\] R. Cappelli and M. Ferrara, "LEADER: Lightweight End-to-End Attention-Gated Dual Autoencoder for Robust Minutiae Extraction," 2026, arXiv preprint arXiv:2602.15493. [https://arxiv.org/abs/2602.15493](https://arxiv.org/abs/2602.15493).
+\[9\] R. Cappelli, "Revisiting Handcrafted Minutiae Detection: A Simple and Effective Open Source Baseline for
+Modern Fingerprint Workflows", 2026, arXiv preprint.
+
+\[10\] R. Cappelli and M. Ferrara, "LEADER: Lightweight End-to-End Attention-Gated Dual Autoencoder for Robust Minutiae Extraction," 2026, arXiv preprint arXiv:2602.15493. [https://arxiv.org/abs/2602.15493](https://arxiv.org/abs/2602.15493).
 
 
 
