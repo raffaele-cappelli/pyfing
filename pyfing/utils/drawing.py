@@ -1,11 +1,11 @@
 import math
 import numpy as np
 import cv2 as cv
-from pyfing.definitions import Image
-from pyfing.minutiae import Minutia
+from pyfing.definitions import Image, Minutia
 
 
-def draw_orientations(img: Image, orientations: np.ndarray, mask: Image, scale: int = 1, step: int = 16, color: tuple[int, int, int] = (255,0,0)) -> Image:
+
+def draw_orientations(img: Image | None, orientations: np.ndarray, mask: Image | None, scale: int = 1, step: int = 16, color: tuple[int, int, int] = (255,0,0)) -> Image:
     """Draws line segments, corresponding to the orientations, every step pixels over img, 
     only on mask pixels. The scale parameter allows to resize img. Returns the resulting image."""
     if img is None:
@@ -33,7 +33,7 @@ def draw_orientations(img: Image, orientations: np.ndarray, mask: Image, scale: 
     return img
 
 
-def draw_frequencies(fingerprint, periods, mask):
+def draw_frequencies(fingerprint: Image | None, periods, mask: Image | None) -> Image:
     """Draws a frequency map using the color scale reported in figure 2 of the paper. 
     The periods matrix must contain the inverse of the local frequency for each pixel."""
     if mask is None:

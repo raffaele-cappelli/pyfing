@@ -23,7 +23,7 @@ class OrientationEstimationAlgorithm(ABC):
         self.parameters = parameters
     
     @abstractmethod
-    def run(self, image: Image, mask: Image = None, dpi: int = 500, intermediate_results = None) -> tuple[np.ndarray, np.ndarray]:
+    def run(self, image: Image, mask: Image | None = None, dpi: int = 500, intermediate_results = None) -> tuple[np.ndarray, np.ndarray]:
         raise NotImplementedError
     
     def run_on_db(self, images: list[Image], masks: list[Image], dpi_of_images: list[int]) -> list[tuple[np.ndarray,np.ndarray]]:
@@ -57,13 +57,13 @@ class Gbfoe(OrientationEstimationAlgorithm):
     Implementation of GBFOE (Gradient-Based Fingerprint Orientation Estimation) method.
     """
 
-    def __init__(self, parameters : GbfoeParameters = None):
+    def __init__(self, parameters : GbfoeParameters | None = None):
         if parameters is None:
             parameters = GbfoeParameters()
         super().__init__(parameters)
         self.parameters = parameters
 
-    def run(self, image: Image, mask: Image = None, dpi: int = 500, intermediate_results = None) -> tuple[np.ndarray, np.ndarray]:        
+    def run(self, image: Image, mask: Image | None = None, dpi: int = 500, intermediate_results = None) -> tuple[np.ndarray, np.ndarray]:        
         parameters = self.parameters
 
         if parameters.percentile > 0:
@@ -134,7 +134,7 @@ class Snfoe(OrientationEstimationAlgorithm):
     If both model_weights and model are None, the default model installed with the package is loaded.
     """
     
-    def __init__(self, parameters : SnfoeParameters = None, model_weights = None, model = None):
+    def __init__(self, parameters : SnfoeParameters | None = None, model_weights = None, model = None):
         if parameters is None:
             parameters = SnfoeParameters()
         super().__init__(parameters)
@@ -178,9 +178,12 @@ class Snfoe(OrientationEstimationAlgorithm):
         return keras.Model(input, x)        
 
 
-    def run(self, image: Image, mask: Image = None, dpi: int = 500, intermediate_results = None) -> tuple[np.ndarray, np.ndarray]:        
+    def run(self, image: Image, mask: Image | None = None, dpi: int = 500, intermediate_results = None) -> tuple[np.ndarray, np.ndarray]:        
         parameters = self.parameters
         original_image_h, original_image_w = image.shape
+
+        if mask is None:
+            mask = np.full_like(image, 255, dtype=np.uint8)
 
         if dpi != parameters.dnn_input_dpi:
             f = parameters.dnn_input_dpi / dpi

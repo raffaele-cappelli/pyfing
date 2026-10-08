@@ -1,9 +1,11 @@
-from .segmentation import *
-from .orientations import *
-from .frequencies import *
-from .enhancement import *
-from .minutiae import *
 import numpy as np
+from .definitions import Image, Minutia
+from .segmentation import Gmfs, Sufs
+from .orientations import Gbfoe, Snfoe
+from .frequencies import Snffe, Xsffe
+from .enhancement import Gbfen, Snfen
+from .minutiae_end_to_end import Leader
+from .minutiae_from_enhanced_image import Sbmex
 
 
 _sufs_alg = None
@@ -15,6 +17,7 @@ _snffe_alg = None
 _snfen_alg = None
 _gbfen_alg = None
 _leader_alg = None
+_sbmex_alg = None
 
 def fingerprint_segmentation(fingerprint: Image, dpi: int = 500, method: str = "SUFS") -> Image:
     """
@@ -143,7 +146,7 @@ def fingerprint_enhancement(fingerprint: Image, orientation_field: np.ndarray, r
     return alg.run(fingerprint, segmentation_mask, orientation_field, ridge_period_map, dpi)
 
 
-def minutiae_extraction(fingerprint: Image, dpi: int = 500, method: str = "LEADER") -> list[Minutia]:
+def minutiae_extraction(fingerprint: Image, dpi: int = 500, method: str = "LEADER", segmentation_mask: Image | None = None) -> list[Minutia]:
     """
     Simple API for fingerprint minutiae extraction.
 
@@ -154,19 +157,29 @@ def minutiae_extraction(fingerprint: Image, dpi: int = 500, method: str = "LEADE
     dpi : int, optional
         The fingerprint resolution in dots per inch. Default is 500.
     method : str, optional
-        The extraction algorithm to use. Currently only "LEADER" is supported.
+        The extraction algorithm to use: "LEADER" or "SBMEX". SBMEX expects an enhanced, binarized fingerprint.
+    segmentation_mask : a numpy array containing the segmentation mask (dtype: np.uint8), optional
+        Used only by SBMEX to identify the foreground; ignored by LEADER. If None, SBMEX takes the whole image as foreground.
 
     Returns
     -------
     list[Minutia]
         A list of detected minutiae.
     """
-    global _leader_alg
+    global _leader_alg, _sbmex_alg
     if method == "LEADER":
         if _leader_alg is None:
             _leader_alg = Leader()
         alg = _leader_alg
+        return alg.run(fingerprint, dpi)
+    elif method == "SBMEX":
+        if _sbmex_alg is None:
+            _sbmex_alg = Sbmex()
+        if segmentation_mask is None:
+            segmentation_mask = np.full_like(fingerprint, 255)
+        alg = _sbmex_alg
+        return alg.run(fingerprint, segmentation_mask, dpi)
     else:
         raise ValueError(f"Invalid method ({method})")
-    return alg.run(fingerprint, dpi)
 
+ 

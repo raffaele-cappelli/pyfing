@@ -1,10 +1,11 @@
 import os
+import numpy as np
 import keras
 from keras import layers
 import cv2 as cv
 from abc import abstractmethod, ABC
 from ._internal_utils import _predict_and_get_all_outputs, _resize_and_crop_intermediate_output
-from .definitions import *
+from .definitions import Minutia, Image, Parameters
 
 
 class EndToEndMinutiaExtractionParameters(Parameters):

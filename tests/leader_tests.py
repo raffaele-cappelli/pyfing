@@ -4,7 +4,7 @@ import math
 import time
 import cv2 as cv
 import pyfing as pf
-from pyfing.minutiae import Minutia
+from pyfing.definitions import Minutia
 from pyfing.utils.sd27 import load_sd27_test_db
 from pyfing.utils.sd302 import load_sd302_latent_db
 from pyfing.utils.iso_format import load_minutiae_from_iso_template_file

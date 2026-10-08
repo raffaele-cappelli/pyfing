@@ -64,7 +64,7 @@ class Gmfs(SegmentationAlgorithm):
     The GMFS segmentation method.
     """
 
-    def __init__(self, parameters : GmfsParameters = None):
+    def __init__(self, parameters : GmfsParameters | None = None):
         if parameters is None:
             parameters = GmfsParameters()
         super().__init__(parameters)
@@ -165,7 +165,7 @@ class Sufs(SegmentationAlgorithm):
     The SUFS segmentation method.
     If both model_weights and model are None, the default model installed with the package is loaded.
     """
-    def __init__(self, parameters : SufsParameters = None, model_weights = None, model = None):
+    def __init__(self, parameters : SufsParameters | None = None, model_weights = None, model = None):
         if parameters is None:
             parameters = SufsParameters()
         super().__init__(parameters)
