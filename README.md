@@ -29,7 +29,10 @@ frequencies = pf.frequency_estimation(fingerprint, orientations, segmentation_ma
 # Image enhancement
 enhanced_image = pf.fingerprint_enhancement(fingerprint, orientations, frequencies, segmentation_mask, method="GBFEN")
 
-# End-to-end minutiae extraction (Note: this method does NOT require previous steps)
+# Minutiae detection
+minutiae = pf.minutiae_extraction(enhanced_image, method="SBMEX", segmentation_mask=segmentation_mask)
+
+# End-to-end minutiae extraction (Note: this method does not require previous steps)
 minutiae = pf.minutiae_extraction(fingerprint)
 ```
 
