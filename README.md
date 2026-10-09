@@ -97,7 +97,7 @@ The following minutia extraction method are available:
 \[8\] R. Cappelli, "Unleashing the Power of Simplicity: A Minimalist Strategy for State-of-the-Art Fingerprint Enhancement", 2026, arXiv preprint arXiv:2603.19004. [https://arxiv.org/abs/2603.19004](https://arxiv.org/abs/2603.19004).
 
 \[9\] R. Cappelli, "Revisiting Handcrafted Minutiae Detection: A Simple and Effective Open Source Baseline for
-Modern Fingerprint Workflows", 2026, arXiv preprint.
+Modern Fingerprint Workflows", 2026, arXiv preprint:2610.11641. [http://arxiv.org/abs/2610.11641](http://arxiv.org/abs/2610.11641)
 
 \[10\] R. Cappelli and M. Ferrara, "LEADER: Lightweight End-to-End Attention-Gated Dual Autoencoder for Robust Minutiae Extraction," 2026, arXiv preprint arXiv:2602.15493. [https://arxiv.org/abs/2602.15493](https://arxiv.org/abs/2602.15493).
 
