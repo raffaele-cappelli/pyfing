@@ -36,11 +36,17 @@ minutiae = pf.minutiae_extraction(enhanced_image, method="SBMEX", segmentation_m
 minutiae = pf.minutiae_extraction(fingerprint)
 ```
 
+## License
+The code, pre-trained model weights, and documentation in this repository are licensed under the [MIT License](LICENSE).
+
+## Citing pyfing
+If you use `pyfing` in your research, please cite the core library and the specific papers corresponding to the methods you use in your pipeline. For example, if you use **GMFS** for segmentation and **LEADER** for minutiae extraction, please cite [2] and [10].
+
 ---
 ## Available methods
 Below you can find an overview of the different methods available in pyfing for each step of the fingerprint recognition pipeline.
 
-## Fingerprint segmentation
+### Fingerprint segmentation
 The following segmentation methods are available:
 - GMFS (Gradient-Magnitude Fingerprint Segmentation): straightforward yet effective approach, achieving superior performance compared to previously reported traditional (non deep-learning-based) methods. Its average error rate on the FVC segmentation benchmark \[1\] is 2.98%.
 - SUFS (Simplified U-net Fingerprint Segmentation): method based on a simplified U-net architecture that surpasses all previous methods evaluated on the FVC segmentation benchmark \[1\]. Its average error rate on the benchmark is 1.51%.
@@ -48,7 +54,7 @@ The following segmentation methods are available:
 See \[2\] for a complete description of the two segmentation methods.
 
 
-## Fingerprint orientation field estimation
+### Fingerprint orientation field estimation
 The following orientation field estimation methods are available:
 - GBFOE (Gradient-Based Fingerprint Orientation Estimation): a simple fingerprint orientation estimation method based on traditional image processing techniques with minimal computational resource requirements that achieves performance comparable to much more complex methods. It achieves an average error of 5.30° and 14.40° on the "good" and "bad" datasets of the FOE-STD-1.0 benchmark \[3\], respectively.
 - SNFOE (Simple Network for Fingerprint Orientation Estimation): learning-based fingerprint orientation estimation method that surpasses all previous methods evaluated on public benchmarks and can deal both with plain fingerprints acquired through online sensors, and with latent fingerprints, without requiring any fine-tuning. It achieves an average error of 4.30° and 6.37° on the "good" and "bad" datasets of the FOE-STD-1.0 benchmark \[3\], respectively.
@@ -56,7 +62,7 @@ The following orientation field estimation methods are available:
 See \[4\] for a complete description of the two orientation field estimation methods.
 
 
-## Fingerprint frequency estimation
+### Fingerprint frequency estimation
 The following frequency estimation methods are available:
 - XSFFE (X-Signature-based Fingerprint Frequency Estimation): a simple fingerprint frequency estimation method based on traditional image processing techniques and on the computation of the x-signature. It achieves an average error of 5.10% and 7.84%	on the "good" and "bad" datasets of the FFE benchmark \[5\], respectively.
 - SNFFE (Simple Network for Fingerprint Frequency Estimation): learning-based fingerprint frequency estimation method that surpasses all previous methods evaluated on the FFE benchmark. It achieves an average error of 3.62% and 6.69%	on the "good" and "bad" datasets of the FFE benchmark \[5\], respectively.
@@ -64,7 +70,7 @@ The following frequency estimation methods are available:
 See \[6\] for a complete description of the two frequency estimation methods.
 
 
-## Fingerprint enhancement
+### Fingerprint enhancement
 The following enhancement methods are available:
 - GBFEN (Gabor-Based Fingerprint ENhancement): a simple fingerprint enhancement method based on traditional contextual convolution with Gabor filters. Combined with SNFOE and SNFFE, it surpasses the performance of state-of-the-art methods on the challenging NIST SD27 latent fingerprint database \[7]\.
 - SNFEN (Simple Network for Fingerprint ENhancement): learning-based fingerprint enhancement method that achieves even better results while maintaining simplicity,
@@ -73,7 +79,7 @@ linearity, and ease of implementation.
 See \[8\] for a complete description of the two fingerprint enhancement methods.
 
 
-## Minutiae extraction
+### Minutiae extraction
 The following minutia extraction method are available:
 - SBMEX (Skeleton-Based Minutia EXtraction): a simple traditional method based on Crossing Number computation from ridge and valley skeletons. SBMEX takes an enhanced fingerprint image and its segmentation mask as input. Its performance is aligned with legacy traditional baselines (MINDTCT, FingerJet) \[9\].
 - LEADER (Lightweight End-to-end Attention-gated Dual Encoder-decodeR): a neural network that maps raw fingerprint images to minutiae descriptors, including location, direction, and type. With only 0.9 M parameters, it achieves state-of-the-art accuracy on plain fingerprints and robust cross-domain generalization to latent impressions \[10\].
